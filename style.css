@@ -1,0 +1,44 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  font-family: Tahoma;
+}
+
+canvas {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -40%);
+}
+
+h2 {
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin-top: 10%;
+}
+
+h3 {
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 50px;
+}
+
+.center {
+  background-color: white;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+}
+
+#formula {
+  color: white;
+}
