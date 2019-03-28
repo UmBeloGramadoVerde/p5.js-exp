@@ -1,0 +1,127 @@
+<!DOCTYPE html><html><head>
+
+  <script src="p5.min.js"></script>
+  <script src="p5.dom.min.js"></script>
+  <script src="p5.sound.min.js"></script>
+  <script src="sketch.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>The Bauhaus Interactive Tour</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <script src="mapbox-gl.js"></script>
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div id="map"></div>
+  <div id="features">
+    <section id="start" class="active">
+      <h3>The Bauhaus Interactive Tour</h3>
+      <p>Panorama sobre a Alemanha analisando a história e caminho seguindo o caminho da Bauhaus, uma das maiores e mais importantes escolas do modernismo no design e arquitetura, observando, inclusive, como essa escola deu origem à nova tipografía.</p>
+      <p>Obs.:O mapa segue a rolagem, você tambem tem a opção de retornar. MODO PAISAGEM É UMA BOA IDEIA.</p>
+      <img src="assets/berlin.jpg">
+    </section>
+    <section id="weimar-high">
+      <h3>Phase 1 - Weimar, Germany</h3>
+      <p>Em 1914 Walter Gropius assumiu a diretoria da escola, que na época se chama Weimar Arts and Crafts School. No entanto, não assumiu controle efetivamente, levando em consideração que a primeira guerra mundial começou em 1915. Durante o conflito a escola permaneceu fechada. Somente após o final que Gropius pode efetivamente assumir controle da instituição e pode renomear a escola para Das Staatliches Bauhaus. AKA The Bauhaus.</p>
+      <img src="assets/weimar.jpg">
+    </section>
+    <section id="weimar-street-1">
+      <h3>O manifesto de Bauhaus</h3>
+      <p>Em 1919 foi publicado o manifesto de Bauhaus. Ele apresentava os princípios de design que a escola seguiria, sendo esses, baseados em pragmatismo e culto à qualidade do processo de criação (craftsmanship). Poderiamos resumir esse manifesto a quatro pontos principais:</p>
+      <ol>
+        <li>Um designer sempre deve buscar realizar o trabalho com a melhor qualidade possível.</li>
+        <li>Menos é mais. O ornamento corrompe e é desnecessário.</li>
+        <li>Um produto deve ser verdadeiro quanto aos seus materiais.</li>
+        <li>A forma segue a função</li>
+      </ol>
+      <img src="assets/walter.jpg">
+    </section>
+    <section id="weimar-street-2">
+      <h3>Sincretismo laboral</h3>
+      <p>Uma característica marcante da filosofia de Gropius para a instituição era a confluência de artistas de diferentes disciplinas. Ele buscava trazer uma nova "espiritualidade" para o design pela integração da escultura, pintura e arquitetura. "To bring new life into the dead products of the machine"</p>
+      <img src="assets/sincretismo.jpg">
+    </section>
+    <section id="dessau-high">
+      <h3>Phase 2 - Dessau, Germany</h3>
+      <p>Devido a tensões com o governo de Weimar, Gropius decidiu mudar a escola de Bauhaus para a pequena província de Dessau. O novo edifício foi aberto no outono de 1926, com a ajuda do Mayor de Dessau e tinha Walter Gropius como diretor.</p>
+      <img src="assets/dessau.jpg">
+    </section>
+    <section id="dessau-street-1">
+      <h3>Inicio da influência na indústria</h3>
+      <p>A Bauhaus Corporation foi fundada para vender protótipos para a indústria. As ideias da Bauhaus influenciaram os produtos da indústria que foram encontrados no quotidiano.</p>
+      <img src="assets/industria.jpeg">
+    </section>
+    <section id="dessau-street-2">
+      <h3>The magazine</h3>
+      <p>A Bauhaus Magazine foi criada juntamente com uma série de 14 livros. Estas publicações influentes foram escritas, editadas e projetadas por Gropius, Kandinsky, Klee, Mondrian, Moholy-Nagy e van Doesburg.</p>
+      <img src="assets/magazine.jpg">
+    </section>
+    <section id="berlin-high">
+      <h3>Phase 3 - Berlin, Germany</h3>
+      <p>Em 1928 Walter Gropius deixou o cargo de diretor da Bauhaus para para se dedicar a um período sabático. Em 1930 Mies van der Rohe, um proeminente arquiteto de Berlim tomou o cargo de diretor. </p>
+      <img src="assets/berlin.jpg">
+
+    </section>
+    <section id="berlin-street-1">
+      <h3>CANCELED</h3>
+      <p>Em 1931 os Nazis cancelaram os contratos de financiamento e de faculdade que a escola de Bauhaus tinha com o governo e com isto, Rohe mudou a escola para Berlim e tentou executar a Bauhaus a partir de uma fábrica de telefones abandonada. No dia 10 de agosto de 1933 a escola de Bauhaus fechou por voto do corpo docente.</p>
+      <img src="assets/nazis.jpg">
+
+    </section>
+    <section id="berlin-street-2">
+      <h3>Impacto da Bauhaus</h3>
+      <p>A escola criou um movimento viável e moderno que incluiu arquitetura, design e comunicações visuais. A escola permitiu que o design fosse usado como meio de mudança a nível social e afetou profundamente o futuro da educação de belas artes e das artes aplicadas.</p>
+      <img src="assets/impacto.jpeg">
+
+    </section>
+    <section id="berlin-street-3">
+      <h3>The new typography</h3>
+      <p>Na Bauhaus praticou-se uma Tipografia funcionalista, orientada pela estética da nova tipografia. A fonte privilegiada nesta instituição foi a Akzidenz Grotesk.</p>
+      <img src="assets/typo.jpeg">
+
+    </section>
+    <section id="berlin-street-4">
+      <p>Na Bauhaus, criaram um sistema de glifos “nus” – nus como uma máquina, livre de embelezamentos, livre de qualquer ideologia da cultura.</p>
+      <img src="assets/typo2.jpeg">
+
+    </section>
+    <section id="berlin-street-5">
+      <ol>
+        <li>Letras avulsas, vogais e consoantes, eram isoladas e tratadas como elementos de composição. Uma abordagem tipográfica séria mas que continha um elemento quase teatral.</li>
+        <li>Eles consideravam tipografia e layout uma arte e uma ciência ao mesmo tempo que se desenvolvia a partir de técnicas de impressão.</li>
+        <li>Ordem, simplificação e claridade eram os ideais gráficos.</li>
+      </ol>
+      <img src="assets/typo3.jpeg">
+
+    </section>
+    <section id="brasilia-high">
+      <h3>Inspirados na Bauhaus - Brasilia</h3>
+      <p>A casa de Muche, novo lar da nova Bauhaus tinha como objetivo facilitar a comunicação entre o espaço privado e a convivência público, princípio este, que influenciou tambem o layout das superquadras da capital brasileira.</p>
+    </section>
+    <section id="brasilia-street-1">
+      <img src="assets/brasilia.jpeg">
+      <img src="assets/brasilia2.jpg">
+    </section>
+    <section id="telaviv-high">
+      <h3>Inspirados na Bauhaus - Tel Aviv</h3>
+      <p>Com os fechamentos dos contratos estatais da escola com o geverno, a Bauhaus foi fechada e seus estudantes se dispersaram pelo mundo. Esse evento ocorreu na mesma época que o inicio da cidade de Tel Aviv, onde alguns estudantes do instituto encontraram a oportunidade de modelar a cidade aos principios que aprenderam, criando mais de 4000 edificios no estilo</p>
+    </section>
+    <section id="telaviv-street-1">
+      <img src="assets/telaviv.jpeg">
+      <img src="assets/telaviv2.jpg">
+    </section>
+    <section>
+      <h1>Obrigado pela atenção</h1>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+    </section>
+  </div>
+
+
+
+</body></html>
