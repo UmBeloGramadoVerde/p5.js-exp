@@ -14,6 +14,7 @@ let soma = 0;
 
 
 function setup() {
+	//Thank you Jarbas
 	url = 'https://jarbas.serenata.ai/api/chamber_of_deputies/reimbursement/';
 	createCanvas(1000, 1400);
 	for (i = 0; i <= limite; i++) {
@@ -42,7 +43,6 @@ function draw() {
 			console.log("Index:");
 			console.log(Math.trunc(reim.results[contador].total_net_value));
 			list[Math.trunc(reim.results[contador].total_net_value)]++;
-			// saveJSON(reim, reim.json);
 		}
 		contador = 0;
 		for (i = 0; i <= limite; i++) {
