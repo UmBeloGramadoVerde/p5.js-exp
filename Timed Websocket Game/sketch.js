@@ -1,3 +1,7 @@
+//The code right now is able to generate a random, dounut shaped terrain. The Ball class is created and
+//responds to the mouse commands (temporary). The algorith for checking for the closest edge is implemente and
+//working, but the next step is implementing checking for the closest point (not only edge).
+
 let width = 800;
 let height = 800;
 
