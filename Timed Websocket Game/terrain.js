@@ -2,8 +2,8 @@
 class Terrain {
 
   constructor(r_min, r_max) {
-    this.points_inner = 25;
-    this.points_outer = 50;
+    this.points_inner = 20;
+    this.points_outer = 40;
     this.radius_min = r_min;
     this.radius_max = r_max;
     this.vertices_inner = [];
