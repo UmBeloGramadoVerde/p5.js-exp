@@ -45,22 +45,19 @@ class Terrain {
   draw() {
     let i;
 
-    stroke(255);
-    strokeWeight(1);
-    noFill();
-    beginShape();
-    for (i = 0; i < this.vertices_inner.length; i++) {
-      vertex(this.vertices_inner[i].x, this.vertices_inner[i].y);
-    }
-    endShape();
-
-
-    stroke(255);
-    strokeWeight(1);
-    noFill();
+    noStroke();
+    fill(100,87,166);
     beginShape();
     for (i = 0; i < this.vertices_outer.length; i++) {
       vertex(this.vertices_outer[i].x, this.vertices_outer[i].y);
+    }
+    endShape();
+
+    noStroke();
+    fill(157,172,255);
+    beginShape();
+    for (i = 0; i < this.vertices_inner.length; i++) {
+      vertex(this.vertices_inner[i].x, this.vertices_inner[i].y);
     }
     endShape();
   }
