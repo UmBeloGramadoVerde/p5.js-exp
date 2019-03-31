@@ -1,3 +1,7 @@
+//The app now can generate the ball and make it be contained inside the arena (fixes need for inside the arena, ocasional crashes)
+//Implemente the "boost" method in order to implement the rithym on the next phase
+//Functions to detect distance and push implemented for interacting with all kinds os arenas and players
+
 let width = 400;
 let height = 400;
 
