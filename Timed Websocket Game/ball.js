@@ -8,6 +8,9 @@ class Ball {
 	}
 
 	draw(){
+		fill(75, 192, 217);
+		stroke(118, 229, 252);
+		strokeWeight(1);
 		ellipse(this.pos.x,this.pos.y,2*this.r,2*this.r);
 	}
 
@@ -91,8 +94,8 @@ class Ball {
 			}
 		}
 
-		stroke(255);
-    	strokeWeight(3);
+		stroke(118, 229, 252);
+    	strokeWeight(1);
     	point(closest_vector.x, closest_vector.y);
     	line(this.pos.x,this.pos.y,closest_vector.x, closest_vector.y);
 
@@ -103,7 +106,7 @@ class Ball {
   		return closest_vector;
 	}
 
-	burst(dir){
+	boost(dir){
 		let STRENGTH = 20;
 		let v1 = dir.normalize();
 		v1.mult(STRENGTH);
