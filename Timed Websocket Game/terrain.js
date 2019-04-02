@@ -42,11 +42,11 @@ class Terrain {
 
   }
 
-  draw() {
+  draw(color1, color2) {
     let i;
 
     noStroke();
-    fill(100,87,166);
+    fill(color1);
     beginShape();
     for (i = 0; i < this.vertices_outer.length; i++) {
       vertex(this.vertices_outer[i].x, this.vertices_outer[i].y);
@@ -54,7 +54,7 @@ class Terrain {
     endShape();
 
     noStroke();
-    fill(157,172,255);
+    fill(color2);
     beginShape();
     for (i = 0; i < this.vertices_inner.length; i++) {
       vertex(this.vertices_inner[i].x, this.vertices_inner[i].y);

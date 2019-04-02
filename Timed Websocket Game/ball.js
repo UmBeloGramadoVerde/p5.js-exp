@@ -107,7 +107,7 @@ class Ball {
 	}
 
 	boost(dir){
-		let STRENGTH = 20;
+		let STRENGTH = 25;
 		let v1 = dir.normalize();
 		v1.mult(STRENGTH);
 		let v2 = createVector(0,0,0);
