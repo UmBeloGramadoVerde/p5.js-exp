@@ -1,0 +1,29 @@
+{
+  "name": "timed-websocketed-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "game",
+    "time",
+    "web",
+    "socket",
+    "42",
+    "jesus",
+    "is",
+    "good",
+    "all",
+    "the",
+    "time",
+    "yes"
+  ],
+  "author": "Kayna Rodrigues",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
