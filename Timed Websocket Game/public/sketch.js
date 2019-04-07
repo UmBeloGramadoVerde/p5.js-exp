@@ -13,21 +13,37 @@ let COLOR_2;
 let COLOR_3;
 let current_color;
 let socket;
+let balls = [];
+let data;
 
 function setup() {
 
   createCanvas(width, height);
   terrain = new Terrain(MIN, MAX);
   terrain.setup();
-  ball = new Ball(MAX / 2, MAX / 2, 20);
-  ball2 = new Ball(MAX / 3, MAX / 3, 20);
+  ball = new Ball(1, MAX / 2, MAX / 2, 20);
   orb = new Orb(((MAX + MIN) / 3) * cos(random(0, 2 * PI)), ((MAX + MIN) / 3) * sin(random(0, 2 * PI)), 20);
   COLOR_1 = color(157, 172, 255);
   COLOR_2 = color(210, 190, 235);
   COLOR_3 = color(255, 210, 215);
   current_color = COLOR_1;
-  socket = io.connect('http://localhost:3010')
-  socket.on('ball', updatePos);
+  socket = io.connect('http://localhost:3000');
+  // socket.on('balls', updatePos);
+
+  data = {
+    x: ball.pos.x,
+    y: ball.pos.y,
+    r: ball.r
+  };
+  console.log("***********"+data);
+  socket.emit('start', data);
+
+  socket.on('heartbeat',
+    function(data) {
+      //console.log(data);
+      blobs = data;
+    }
+  );
 
 }
 
@@ -39,7 +55,6 @@ function draw() {
   terrain.draw(current_color, color(100, 87, 166));
   ball.move();
   ball.draw();
-  ball2.draw();
   ball.keepInside(terrain);
   let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
   stroke(92, 39, 81);
@@ -57,12 +72,8 @@ function draw() {
   }
   contador++;
 
-  ball2.pos.x -= 0.1;
-  ball2.pos.y -= 0.1;
-
   orb.draw();
   ball.checkOrb(orb);
-  ball.checkBall(ball2);
   if (!orb.alive) {
     if (contador2 == 0) {
       contador2 = second();
@@ -72,9 +83,35 @@ function draw() {
       contador2 = 0;
     }
   }
-  
-  socket.emit('ball', data);
-  console.log('sending:', mouseX +',', mouseY +',', clr)
+
+  // socket.emit('ball', data);
+  // console.log('sending:', mouseX +',', mouseY +',', clr)
+
+  for (var i = balls.length - 1; i >= 0; i--) {
+    var id = balls[i].id;
+    if (id.substring(2, id.length) !== socket.id) {
+      fill(0, 0, 255);
+      ellipse(balls[i].x, balls[i].y, balls[i].r * 2, balls[i].r * 2);
+
+      ball.checkBall(balls[i]);
+
+      fill(255);
+      textAlign(CENTER);
+      textSize(4);
+      text(balls[i].id, balls[i].x, balls[i].y + balls[i].r);
+    }
+    // balls[i].show();
+    // if (blob.eats(balls[i])) {
+    //   balls.splice(i, 1);
+    // }
+  }
+
+  data = {
+    x: ball.pos.x,
+    y: ball.pos.y,
+    r: ball.r
+  };
+  socket.emit('update', data);
 
 }
 
@@ -83,5 +120,5 @@ function mousePressed() {
   ball.boost(mouse);
 }
 
-function updatePos(){
-}
+// function updatePos(){
+// }

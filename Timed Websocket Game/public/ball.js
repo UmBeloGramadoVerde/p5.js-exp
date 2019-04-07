@@ -1,13 +1,13 @@
 class Ball {
 
-  constructor(x, y, r) {
+  constructor(id, x, y, r) {
     this.pos = createVector(x, y);
     this.r = r;
     this.speed = createVector(0, 0);
     this.last;
     this.alive = true;
     this.particles = [];
-    this.id;
+    this.id = id;
   }
 
   draw() {
