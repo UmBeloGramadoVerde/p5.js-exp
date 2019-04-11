@@ -4,8 +4,8 @@ let balls = [];
 
 function Ball(id, x, y, r) {
   this.id = id;
-  this.pos.x = x;
-  this.pos.y = y;
+  this.x = x;
+  this.y = y;
   this.r = r;
 }
 
@@ -31,6 +31,7 @@ setInterval(heartbeat, 33);
 
 function heartbeat() {
   io.sockets.emit('heartbeat', balls);
+  console.log(balls);
 }
 
 
@@ -48,8 +49,8 @@ io.sockets.on('connection',
       function(data) {
       	var ball_aux;
         console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
-        console.log("oi");
-      	console.log(new Ball(socket.id, data.x, data.y, data.r));
+        ball_aux = new Ball(socket.id, data.x, data.y, data.r);
+        balls.push(ball_aux);
       }
     );
 
