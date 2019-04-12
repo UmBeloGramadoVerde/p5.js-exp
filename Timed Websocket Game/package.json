@@ -24,7 +24,9 @@
   "author": "Kayna Rodrigues",
   "license": "ISC",
   "dependencies": {
+    "angle-functions": "^0.3.0",
     "express": "^4.16.4",
+    "random": "^2.1.1",
     "socket.io": "^2.2.0"
   }
 }

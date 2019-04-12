@@ -15,36 +15,46 @@ let current_color;
 let socket;
 let balls = [];
 let data;
+let terrain;
+
+function preload() {
+
+  socket = io.connect('http://localhost:3000');
+  terrain = new Terrain(MIN, MAX);
+
+  socket.on('terrain',
+    function(data) {
+      terrain = data;
+      console.log(terrain);
+   }
+  );
+
+}
 
 function setup() {
 
   createCanvas(width, height);
-  terrain = new Terrain(MIN, MAX);
-  terrain.setup();
   ball = new Ball(1, MAX / 2, MAX / 2, 20);
   orb = new Orb(((MAX + MIN) / 3) * cos(random(0, 2 * PI)), ((MAX + MIN) / 3) * sin(random(0, 2 * PI)), 20);
   COLOR_1 = color(157, 172, 255);
   COLOR_2 = color(210, 190, 235);
   COLOR_3 = color(255, 210, 215);
   current_color = COLOR_1;
-  socket = io.connect('http://localhost:3000');
-  // socket.on('balls', updatePos);
+
 
   data = {
     x: ball.pos.x,
     y: ball.pos.y,
     r: ball.r
   };
-  console.log("***********"+data);
   socket.emit('start', data);
 
   socket.on('heartbeat',
     function(data) {
-      //console.log(data);
       blobs = data;
+      console.log(terrain);
     }
   );
-
 }
 
 function draw() {
@@ -84,9 +94,6 @@ function draw() {
     }
   }
 
-  // socket.emit('ball', data);
-  // console.log('sending:', mouseX +',', mouseY +',', clr)
-
   for (var i = balls.length - 1; i >= 0; i--) {
     var id = balls[i].id;
     if (id.substring(2, id.length) !== socket.id) {
@@ -100,10 +107,6 @@ function draw() {
       textSize(4);
       text(balls[i].id, balls[i].x, balls[i].y + balls[i].r);
     }
-    // balls[i].show();
-    // if (blob.eats(balls[i])) {
-    //   balls.splice(i, 1);
-    // }
   }
 
   data = {
@@ -112,13 +115,9 @@ function draw() {
     r: ball.r
   };
   socket.emit('update', data);
-
 }
 
 function mousePressed() {
   let mouse = createVector(mouseX - (width / 2), mouseY - (height / 2));
   ball.boost(mouse);
 }
-
-// function updatePos(){
-// }

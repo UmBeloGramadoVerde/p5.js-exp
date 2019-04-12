@@ -1,6 +1,11 @@
 let express = require('express');
+let random = require('random');
+let angles = require('angle-functions');
 let app = express();
 let balls = [];
+let MAX = 400;
+let MIN = 30;
+let terrain;
 
 function Ball(id, x, y, r) {
   this.id = id;
@@ -8,6 +13,48 @@ function Ball(id, x, y, r) {
   this.y = y;
   this.r = r;
 }
+
+function Terrain(r_min, r_max) {
+
+  this.points_inner = 20;
+  this.points_outer = 40;
+  this.radius_min = r_min;
+  this.radius_max = r_max;
+  this.vertices_inner = [];
+  this.vertices_outer = [];
+  this.midpoint = (this.radius_max - this.radius_min) / 3;
+  this.body_inner;
+  this.body_outer;
+}
+
+Terrain.prototype.setup = function() {
+  let i;
+  let xaux, yaux;
+  let radius;
+
+  //***Generating terrain path***
+
+  //inner
+  for (i = 0; i < this.points_inner; i++) {
+    radius = random.float(min = this.radius_min, max = this.radius_min + this.midpoint);
+    xaux = angles.cos((360 / this.points_inner) * i) * radius;
+    yaux = angles.sin((360 / this.points_inner) * i) * radius;
+    this.vertices_inner.push({ x: xaux, y: yaux });
+  }
+  this.vertices_inner[this.points_inner-1] = this.vertices_inner[0];
+  this.vertices_inner[this.points_inner] = this.vertices_inner[1];
+
+  //outer
+  for (i = 0; i < this.points_outer; i++) {
+    radius = random.float(min = this.radius_max - this.midpoint, max = this.radius_max);
+    xaux = angles.cos((360 / this.points_outer) * i) * radius;
+    yaux = angles.sin((360 / this.points_outer) * i) * radius;
+    this.vertices_outer[i] = { x: xaux, y: yaux };
+  }
+  this.vertices_outer[this.points_outer-1] = this.vertices_outer[0];
+  this.vertices_outer[this.points_outer] = this.vertices_outer[1];
+
+};
 
 // Set up the server
 // process.env.PORT is related to deploying on heroku
@@ -22,7 +69,6 @@ function listen() {
 
 app.use(express.static('public'));
 
-
 // WebSocket Portion
 // WebSockets work with the HTTP server
 var io = require('socket.io')(server);
@@ -31,7 +77,6 @@ setInterval(heartbeat, 33);
 
 function heartbeat() {
   io.sockets.emit('heartbeat', balls);
-  console.log(balls);
 }
 
 
@@ -49,8 +94,13 @@ io.sockets.on('connection',
       function(data) {
       	var ball_aux;
         console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
+        if (balls.length == 0) {
+          terrain = new Terrain(MIN, MAX);
+          terrain.setup();
+        }
         ball_aux = new Ball(socket.id, data.x, data.y, data.r);
         balls.push(ball_aux);
+        socket.emit('terrain', terrain);
       }
     );
 
@@ -67,8 +117,6 @@ io.sockets.on('connection',
         ball.y = data.y;
       }
     );
-
-
 
     socket.on('disconnect', function() {
       console.log("Client has disconnected");
