@@ -52,7 +52,6 @@ function setup() {
   socket.on('heartbeat',
     function(data) {
       blobs = data;
-      console.log(terrain);
     }
   );
 }
