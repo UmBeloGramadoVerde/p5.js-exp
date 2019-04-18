@@ -56,6 +56,26 @@ Terrain.prototype.setup = function() {
 
 };
 
+Terrain.prototype.draw = function(color1, color2) {
+  let i;
+
+  noStroke();
+  fill(color1);
+  beginShape();
+  for (i = 0; i < this.vertices_outer.length; i++) {
+    vertex(this.vertices_outer[i].x, this.vertices_outer[i].y);
+  }
+  endShape();
+
+  noStroke();
+  fill(color2);
+  beginShape();
+  for (i = 0; i < this.vertices_inner.length; i++) {
+    vertex(this.vertices_inner[i].x, this.vertices_inner[i].y);
+  }
+  endShape();
+};
+
 // Set up the server
 // process.env.PORT is related to deploying on heroku
 var server = app.listen(process.env.PORT || 3000, listen);

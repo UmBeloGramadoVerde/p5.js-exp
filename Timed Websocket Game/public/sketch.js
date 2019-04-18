@@ -15,7 +15,8 @@ let current_color;
 let socket;
 let balls = [];
 let data;
-let terrain;
+let allower=0;
+let ball_aux;
 
 function preload() {
 
@@ -24,8 +25,9 @@ function preload() {
 
   socket.on('terrain',
     function(data) {
-      terrain = data;
-      console.log(terrain);
+      Object.assign(terrain, data);
+      // console.log(terrain);
+      // console.log(terrain.constructor.name);
    }
   );
 
@@ -51,72 +53,83 @@ function setup() {
 
   socket.on('heartbeat',
     function(data) {
-      blobs = data;
+      balls = data;
     }
   );
+
+  noLoop();
 }
 
 function draw() {
 
-  translate(width / 2, height / 2);
-  translate(-ball.pos.x, -ball.pos.y);
-  background(92, 39, 81);
-  terrain.draw(current_color, color(100, 87, 166));
-  ball.move();
-  ball.draw();
-  ball.keepInside(terrain);
-  let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
-  stroke(92, 39, 81);
-  line(mouse.x, mouse.y, ball.pos.x, ball.pos.y);
+  if (allower==1){
+    translate(width / 2, height / 2);
+    translate(-ball.pos.x, -ball.pos.y);
+    background(92, 39, 81);
+    terrain.draw(current_color, color(100, 87, 166));
+    ball.move();
+    ball.draw();
+    ball.keepInside(terrain);
+    let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
+    stroke(92, 39, 81);
+    line(mouse.x, mouse.y, ball.pos.x, ball.pos.y);
 
-  if (contador % 25 == 0) {
-    if (current_color == COLOR_3) {
-      current_color = COLOR_1;
-    } else if (current_color == COLOR_1) {
-      current_color = COLOR_2;
-    } else if (current_color == COLOR_2) {
-      current_color = COLOR_3;
-      ball.boost(p5.Vector.sub(mouse, ball.pos));
+    if (contador % 25 == 0) {
+      if (current_color == COLOR_3) {
+        current_color = COLOR_1;
+      } else if (current_color == COLOR_1) {
+        current_color = COLOR_2;
+      } else if (current_color == COLOR_2) {
+        current_color = COLOR_3;
+        ball.boost(p5.Vector.sub(mouse, ball.pos));
+      }
     }
+    contador++;
+
+    orb.draw();
+    ball.checkOrb(orb);
+    if (!orb.alive) {
+      if (contador2 == 0) {
+        contador2 = second();
+      }
+      if (second() - contador2 > 3) {
+        orb = new Orb(((MAX + MIN) / 2) * cos(random(0, 2 * PI)), ((MAX + MIN) / 2) * sin(random(0, 2 * PI)), 20);
+        contador2 = 0;
+      }
+    }
+
+    for (var i = balls.length - 1; i >= 0; i--) {
+      var id = balls[i].id;
+      if (id.substring(2, id.length) !== socket.id) {
+        fill(0, 0, 255);
+        ellipse(balls[i].x, balls[i].y, balls[i].r * 2, balls[i].r * 2);
+
+        ball_aux = ball;
+        Object.assign(ball_aux, balls[i]);
+        ball.checkBall(ball_aux);
+
+        fill(255);
+        textAlign(CENTER);
+        textSize(4);
+        text(balls[i].id, balls[i].x, balls[i].y + balls[i].r);
+      }
+    }
+
+    data = {
+      x: ball.pos.x,
+      y: ball.pos.y,
+      r: ball.r
+    };
+    socket.emit('update', data);
   }
-  contador++;
-
-  orb.draw();
-  ball.checkOrb(orb);
-  if (!orb.alive) {
-    if (contador2 == 0) {
-      contador2 = second();
-    }
-    if (second() - contador2 > 3) {
-      orb = new Orb(((MAX + MIN) / 2) * cos(random(0, 2 * PI)), ((MAX + MIN) / 2) * sin(random(0, 2 * PI)), 20);
-      contador2 = 0;
-    }
-  }
-
-  for (var i = balls.length - 1; i >= 0; i--) {
-    var id = balls[i].id;
-    if (id.substring(2, id.length) !== socket.id) {
-      fill(0, 0, 255);
-      ellipse(balls[i].x, balls[i].y, balls[i].r * 2, balls[i].r * 2);
-
-      ball.checkBall(balls[i]);
-
-      fill(255);
-      textAlign(CENTER);
-      textSize(4);
-      text(balls[i].id, balls[i].x, balls[i].y + balls[i].r);
-    }
-  }
-
-  data = {
-    x: ball.pos.x,
-    y: ball.pos.y,
-    r: ball.r
-  };
-  socket.emit('update', data);
 }
 
+// function mousePressed() {
+//   let mouse = createVector(mouseX - (width / 2), mouseY - (height / 2));
+//   ball.boost(mouse);
+// }
+
 function mousePressed() {
-  let mouse = createVector(mouseX - (width / 2), mouseY - (height / 2));
-  ball.boost(mouse);
+  loop();
+  allower=1;
 }
