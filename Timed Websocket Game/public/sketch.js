@@ -16,7 +16,6 @@ let socket;
 let balls = [];
 let data;
 let allower=0;
-let ball_aux;
 
 function preload() {
 
@@ -101,11 +100,11 @@ function draw() {
     for (var i = balls.length - 1; i >= 0; i--) {
       var id = balls[i].id;
       if (id.substring(2, id.length) !== socket.id) {
-        fill(0, 0, 255);
-        ellipse(balls[i].x, balls[i].y, balls[i].r * 2, balls[i].r * 2);
-
-        ball_aux = ball;
+        let ball_aux = ball;
         Object.assign(ball_aux, balls[i]);
+        ball_aux.draw();
+        console.log(balls);
+
         ball.checkBall(ball_aux);
 
         fill(255);
