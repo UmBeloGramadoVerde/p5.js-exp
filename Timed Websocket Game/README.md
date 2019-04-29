@@ -7,3 +7,5 @@ The terrain is being recieved by the subsequent players and it is the same.
 Different user can be logged at the same time and can see each other. Still needing to implement the sync of orbs among players.
 
 Following the same sync idea behind the terrain but more frequently. Players also need to send another piece of data to signalise who they killed. But perhaps that would be more securelly handled by the server.
+
+The orb is in sync among players, they can see the same one and interact with it. Still working on all players recieving the orb_taken signal. Based on security i decided to check the orb-take-age (?) on the server side. The players will just need to listen for the signal and present the animations by themselves.
