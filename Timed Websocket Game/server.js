@@ -3,9 +3,12 @@ let random = require('random');
 let angles = require('angle-functions');
 let app = express();
 let balls = [];
+let orb;
 let MAX = 400;
 let MIN = 30;
 let terrain;
+let running=false;
+let contador2 = 0;
 
 function Ball(id, x, y, r) {
   this.id = id;
@@ -15,7 +18,6 @@ function Ball(id, x, y, r) {
 }
 
 function Terrain(r_min, r_max) {
-
   this.points_inner = 20;
   this.points_outer = 40;
   this.radius_min = r_min;
@@ -56,25 +58,13 @@ Terrain.prototype.setup = function() {
 
 };
 
-Terrain.prototype.draw = function(color1, color2) {
-  let i;
-
-  noStroke();
-  fill(color1);
-  beginShape();
-  for (i = 0; i < this.vertices_outer.length; i++) {
-    vertex(this.vertices_outer[i].x, this.vertices_outer[i].y);
-  }
-  endShape();
-
-  noStroke();
-  fill(color2);
-  beginShape();
-  for (i = 0; i < this.vertices_inner.length; i++) {
-    vertex(this.vertices_inner[i].x, this.vertices_inner[i].y);
-  }
-  endShape();
-};
+function Orb(x, y, r) {
+  this.x = x;
+  this.y = y;
+  this.r = r;
+  this.particles = [];
+  this.alive = true;
+}
 
 // Set up the server
 // process.env.PORT is related to deploying on heroku
@@ -93,10 +83,27 @@ app.use(express.static('public'));
 // WebSockets work with the HTTP server
 var io = require('socket.io')(server);
 
-setInterval(heartbeat, 33);
+// setInterval(heartbeat, 20);
 
 function heartbeat() {
-  io.sockets.emit('heartbeat', balls);
+  beat = {
+    balls: balls,
+    orb: orb
+  };
+  io.sockets.emit('heartbeat', beat);
+
+
+  if (!orb.alive) {
+    if (contador2 == 0) {
+      contador2 = Math.floor(Date.now()/1000);
+    }
+    if ((Math.floor(Date.now()/1000)) - contador2 > 7) {
+      orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 2 * 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 2 * 360)), 20);
+      contador2 = 0;
+    }
+  }
+
+
 }
 
 
@@ -112,34 +119,71 @@ io.sockets.on('connection',
 
     socket.on('start',
       function(data) {
-      	var ball_aux;
+      	let ball_aux;
         console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
         if (balls.length == 0) {
           terrain = new Terrain(MIN, MAX);
           terrain.setup();
+          orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 2 * 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 2 * 360)), 20);
         }
         ball_aux = new Ball(socket.id, data.x, data.y, data.r);
         balls.push(ball_aux);
         socket.emit('terrain', terrain);
+        socket.emit('orb', orb);
+        if (!running) {setInterval(heartbeat, 20);running=true;} 
       }
-    );
+      );
 
     socket.on('update',
       function(data) {
         //console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
-        var ball=0;
-        for (var i = 0; i < balls.length; i++) {
+        let ball=0;
+        for (let i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
             ball = balls[i];
           }
         }
         ball.x = data.x;
-        ball.y = data.y;
+        ball.y = data.y;       
       }
-    );
+      );
+
+    socket.on('orb_killed',
+      function(data) {
+        //console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
+        let ball;
+        let pos_orb = {x: orb.x, y: orb.y};
+        for (let i = 0; i < balls.length; i++) {
+          // console.log("i="+i+" ");
+          // console.log("socket.id="+socket.id+" ");
+          // console.log("balls[i].id="+balls[i].id+" ");
+          if (socket.id == balls[i].id) {
+            ball = balls[i];
+            // console.log("****** FOUND IT ******");
+            // console.log("balls[i]="+balls[i]+" ");
+          }
+        }
+        let delta = (ball.x - pos_orb.x)*(ball.x - pos_orb.x) + (ball.y - pos_orb.y)*(ball.y - pos_orb.y);
+        if (delta <= 1700) {
+          if (orb.alive == true) {
+            taken = {
+              dangerous_boi: ball,
+              orb: orb
+            };
+            socket.broadcast.emit('orb_taken', taken);
+            orb.alive = false;
+          }
+        }    
+      }
+      );
 
     socket.on('disconnect', function() {
-      console.log("Client has disconnected");
+      for (let i = 0; i < balls.length; i++) {
+        if (socket.id == balls[i].id) {
+          console.log("Client "+socket.id+" has disconnected");
+          balls.pop(balls[i]);
+        }
+      }
     });
   }
-);
+  );
