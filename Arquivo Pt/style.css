@@ -11,11 +11,8 @@ a:visited {
 a:hover {
   color:#33F;
 }
-.final {
-  color: black;
-}
 .interim {
-  color: gray;
+  color: #9A275A;
 }
 #info {
   font-size: 20px;
@@ -24,9 +21,10 @@ a:hover {
   visibility: hidden;
   padding: 20px;
   float: right;
-  align-self: right;
+  display: block;
   background-color: #D3C4D1;
   border-radius: 0 0 0 25px;
+  z-index: 10 !important;
 }
 #results {
   font-size: 20px;
@@ -35,9 +33,25 @@ a:hover {
   visibility: visible;
   padding: 20px;
   float: right;
-  align-self: right;
+  clear: right;
+  display: block;
   background-color: #D3C4D1;
   border-radius: 0 0 0 25px;
+  z-index: 11 !important;
+}
+
+#help {
+  font-size: 20px;
+  text-align: right;
+  color: #9A275A;
+  visibility: visible;
+  padding: 20px;
+  float: right;
+  clear: right;
+  display: block;
+  background-color: #D3C4D1;
+  border-radius: 0 0 0 25px;
+  z-index: 12 !important;
 }
 
 iframe {

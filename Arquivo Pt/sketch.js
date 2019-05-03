@@ -67,12 +67,6 @@ if (!('webkitSpeechRecognition' in window)) {
       return;
     }
     showInfo('');
-    if (window.getSelection) {
-      window.getSelection().removeAllRanges();
-      var range = document.createRange();
-      range.selectNode(document.getElementById('final_span'));
-      window.getSelection().addRange(range);
-    }
   };
   recognition.onresult = function(event) {
     interim_transcript = '';
@@ -82,6 +76,7 @@ if (!('webkitSpeechRecognition' in window)) {
       if (event.results[i].isFinal) {
         final_transcript += event.results[i][0].transcript;
         final_word = event.results[i][0].transcript;
+        document.getElementById("results").style.display = "none";
       } else {
         interim_transcript += event.results[i][0].transcript;
         transcript = event.results[i][0].transcript;
@@ -90,9 +85,9 @@ if (!('webkitSpeechRecognition' in window)) {
     var input_event = new CustomEvent('inputting', {detail: interim_transcript});
     listener.dispatchEvent(input_event);
     searchOption(transcript);
-    final_transcript = capitalize(final_transcript);
-    final_span.innerHTML = linebreak(final_transcript);
+    if (transcript!="") {document.getElementById("results").style.display = "block";}
     interim_span.innerHTML = linebreak(interim_transcript);
+    interim_span.style.visibility = "visible";
   };
 }
 
@@ -123,7 +118,6 @@ function startButton(event) {
   recognition.lang = 'pt-BR';
   recognition.start();
   ignore_onend = false;
-  final_span.innerHTML = '';
   interim_span.innerHTML = '';
   showInfo('info_allow');
   start_timestamp = event.timeStamp;
@@ -145,9 +139,8 @@ function showInfo(s) {
 
 
 function searchOption(word){
-  if (menu != "pesquisa") {
+  if (menu == "") {
     let formatted = word.toLowerCase().trim();
-    console.log("{"+formatted+"}");
 
     if (["pesquisa"].indexOf(formatted)>=0){
       console.log("pesquisa");
@@ -160,28 +153,51 @@ function searchOption(word){
     }
 
     if (["baixo", "descer", "desce", "dc", "baixa", "beijo"].indexOf(formatted)>=0){
+      menu = "baixo";
       console.log("baixo");
       abaixa();
     }
 
     if (["cima", "subir", "sim mano", "simão"].indexOf(formatted)>=0){
+      menu = "cima";
       console.log("sobe");
       sobe();
     }
 
     if (["volta", "voltar"].indexOf(formatted)>=0){
+      menu = "volta";
       console.log("volta");
       volta();
     }
 
     if (["avançar", "frente"].indexOf(formatted)>=0){
+      menu = "avançar";
       console.log("avançar");
       avanca();
     }
 
-    if (["tens por busca", "por busca", "e tens por"].indexOf(formatted)>=0){
+    if (["tens por busca", "por busca", "e tens por", "itens por busca"].indexOf(formatted)>=0){
+      menu = "itens";
       console.log("maxitens");
+      menu = "";
       //
+    }
+
+    if (["topo"].indexOf(formatted)>=0){
+      menu = "topo";
+      console.log("topo");
+      window.scrollTo(0, 0);
+    }
+    if (["ajuda", "ajudar", "help"].indexOf(formatted)>=0){
+      menu = "ajuda";
+      document.getElementById("results").style.display = "none";
+      showInfo('info_help');
+      document.getElementById("help").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("help").style.display = "none";
+        showInfo('info_speak_now');
+      }, 5000);
+      console.log("ajuda");
     }
   }
 }
@@ -297,16 +313,12 @@ function decodePixelString(value){
 
 function abaixa(){
   window.scrollBy(0, AMOUNT);
-  // let current = document.getElementById("page").style.top;
-  // if (current == '') {document.getElementById("page").style.top = encodePixelString(-AMOUNT);}
-  // else {document.getElementById("page").style.top = encodePixelString(decodePixelString(current) - AMOUNT);}
+  setTimeout(() => menu = "", 500);
 }
 
 function sobe(){
   window.scrollBy(0, -AMOUNT);
-  // let current = document.getElementById("page").style.top;
-  // if (current == '') {document.getElementById("page").style.top = encodePixelString(AMOUNT);}
-  // else {document.getElementById("page").style.top = encodePixelString(decodePixelString(current) +AMOUNT);}
+  setTimeout(() => menu = "", 500);
 }
 
 function volta() {
@@ -314,6 +326,7 @@ function volta() {
   document.getElementById("frame").src = anterior;
   paginas_afrente.push(anterior);
   paginas_atras.pop(anterior);
+  setTimeout(() => menu = "", 500);
 }
 
 function avanca() {
@@ -321,4 +334,10 @@ function avanca() {
   document.getElementById("frame").src = proxima;
   paginas_atras.push(proxima);
   paginas_afrente.pop(proxima);
+  setTimeout(() => menu = "", 500);
+}
+
+function mostraElementoPorAlgunsSegundos(id){
+  document.getElementById(id).style.zIndex = random(100, 200);
+  setTimeout( () => document.getElementById(id).style.display = "none", 5000);
 }
