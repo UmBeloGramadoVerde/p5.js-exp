@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="p5.min.js"></script>
+  <script src="p5.dom.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+</head>
+
+
+<body>
+
+  <!-- Microphone setting up information feedback -->
+  <div id="info">
+    <p id="info_start">Pressione ENTER e comece a falar.</p>
+    <p id="info_speak_now">Fale agora.</p>
+    <p id="info_no_microphone" style="display:none">Nenhum microfone foi encontrado. Certifique-se que o microfone esta instalado e que as <a href="//support.google.com/chrome/bin/answer.py?hl=en&amp;answer=1407892"> configurações</a> estejam configuradas corretamente.</p>
+    <p id="info_allow">Clique no botão ALLOW acima para habilitar seu microfone.</p>
+    <p id="info_denied">Permissão negada para usar o microfone</p>
+    <p id="info_blocked">Permissão para usar o microfone esta bloqueada. Para alterar isso, vá para chrome://settings/contentExceptions#media-stream</p>
+    <p id="info_upgrade">Web Speech API não é suportada no seu browser.
+      Faça o upgrade para o <a href="//www.google.com/chrome">Chrome</a> versão 25 ou posterior.</p>
+    </div>
+
+    <div id="results">
+     <span id="final_span" class="final"></span>
+     <span id="interim_span" class="interim"></span>
+   </div>
+   <script src="sketch.js"></script>
+
+   <div id="result">
+    <iframe id="frame" src="" scrolling="no" frameborder="0" height='100%' width='100%'></iframe>
+  </div>
+
+</body>  
+</html>
