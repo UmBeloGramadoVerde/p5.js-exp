@@ -18,6 +18,7 @@ const TOTAL_TIME_FOR_SEARCH = 20;
 let AMOUNT;
 let paginas_atras = [];
 let paginas_afrente = [];
+let pages;
 
 let listener = new EventTarget();
 
@@ -72,20 +73,25 @@ if (!('webkitSpeechRecognition' in window)) {
     interim_transcript = '';
     transcript = '';
     let final_word = '';
+    let donezo=false;
     for (var i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
         final_transcript += event.results[i][0].transcript;
         final_word = event.results[i][0].transcript;
-        document.getElementById("results").style.display = "none";
+        donezo = true;
+        document.getElementById("speech_text_div").style.display = "none";
       } else {
         interim_transcript += event.results[i][0].transcript;
         transcript = event.results[i][0].transcript;
       }
     }
-    var input_event = new CustomEvent('inputting', {detail: interim_transcript});
+    let params = {
+      text: interim_transcript
+    };
+    var input_event = new CustomEvent('inputting', {detail: params});
     listener.dispatchEvent(input_event);
     searchOption(transcript);
-    if (transcript!="") {document.getElementById("results").style.display = "block";}
+    if (transcript!="") {document.getElementById("speech_text_div").style.display = "block";}
     interim_span.innerHTML = linebreak(interim_transcript);
     interim_span.style.visibility = "visible";
   };
@@ -137,47 +143,60 @@ function showInfo(s) {
   }
 }
 
+let last_word;
 
 function searchOption(word){
-  if (menu == "") {
+  if ((menu == "") && (last_word != word)) {
+    last_word = word;
     let formatted = word.toLowerCase().trim();
 
-    if (["pesquisa"].indexOf(formatted)>=0){
+    if (["pesquisa", "pesquisar"].indexOf(formatted)>=0){
       console.log("pesquisa");
-      voiceSearch();
+      voiceSearch("Vamos fazer uma pesquisa");
     }
 
-    if (["cancela"].indexOf(formatted)>=0){
+    if (["cancela", "cancelar"].indexOf(formatted)>=0){
       console.log("cancela");
       menu = "";
     }
 
     if (["baixo", "descer", "desce", "dc", "baixa", "beijo"].indexOf(formatted)>=0){
+      //se ja faz 500 milis que fizeram isso
       menu = "baixo";
       console.log("baixo");
-      abaixa();
+      window.scrollBy(0, AMOUNT);
+      setTimeout(() => menu = "", 500);
     }
 
     if (["cima", "subir", "sim mano", "simão"].indexOf(formatted)>=0){
       menu = "cima";
       console.log("sobe");
-      sobe();
+      window.scrollBy(0, -AMOUNT);
+      setTimeout(() => menu = "", 500);
     }
 
     if (["volta", "voltar"].indexOf(formatted)>=0){
       menu = "volta";
       console.log("volta");
-      volta();
+      let anterior = paginas_atras[paginas_atras.length-1];
+      document.getElementById("frame").src = anterior;
+      paginas_afrente.push(anterior);
+      paginas_atras.pop(anterior);
+      setTimeout(() => menu = "", 500);
     }
 
     if (["avançar", "frente"].indexOf(formatted)>=0){
       menu = "avançar";
       console.log("avançar");
-      avanca();
+      let proxima = paginas_afrente[paginas_afrente.length-1];
+      document.getElementById("frame").src = proxima;
+      paginas_atras.push(proxima);
+      paginas_afrente.pop(proxima);
+      setTimeout(() => menu = "", 500);
     }
 
     if (["tens por busca", "por busca", "e tens por", "itens por busca"].indexOf(formatted)>=0){
-      menu = "itens";
+      menu = "maxitens";
       console.log("maxitens");
       menu = "";
       //
@@ -187,10 +206,11 @@ function searchOption(word){
       menu = "topo";
       console.log("topo");
       window.scrollTo(0, 0);
+      menu = "";
     }
     if (["ajuda", "ajudar", "help"].indexOf(formatted)>=0){
       menu = "ajuda";
-      document.getElementById("results").style.display = "none";
+      document.getElementById("speech_text_div").style.display = "none";
       showInfo('info_help');
       document.getElementById("help").style.display = "block";
       setTimeout(() => {
@@ -198,6 +218,7 @@ function searchOption(word){
         showInfo('info_speak_now');
       }, 5000);
       console.log("ajuda");
+      menu = "";
     }
   }
 }
@@ -209,11 +230,23 @@ function say(message){
 }
 
 
+function deleteBeforeWord(text, term){
+  text = text.toLowerCase();
+  let result = text;
+  for (var i = 0; i <= text.length-term.length; i++) {
+    if (text.substring(i, i+term.length) == term) {
+      while((text[i] != " ") && (i < text.length)){
+        i++;
+      }
+      result = text.substring(i+1);
+    }
+  }
+  return result;
+}
 
-
-async function voiceSearch(){
+async function voiceSearch(message){
   query = '';
-  let start_transcript_length=0;
+  window.scrollTo(0, 0);
   let did_user_started;
   let input_timeout_start_time = 0;
   let search_start_time = millis();
@@ -221,13 +254,17 @@ async function voiceSearch(){
   let search_in_progress = false;
   let is_listener_alive = true;
 
-  say("Vamos fazer uma pesquisa");
+
+  say(message);
 
   listener.addEventListener("inputting", function handler(input) {
 
-    if (start_transcript_length == 0) {start_transcript_length = input.detail.length;}
-    if (input.detail != '') {
-      query = input.detail.substring(start_transcript_length).trim();
+    if (input.detail.text != '') {
+      query = deleteBeforeWord(input.detail.text, "pesqui");
+
+      console.log("*************");
+      console.log("input detail-> {"+input.detail.text+"}");
+      console.log("query-> {"+query+"}");
 
       input_timeout_start_time = millis();
       input_timeout_start_string = query;
@@ -254,6 +291,7 @@ async function voiceSearch(){
       did_user_started = generatesPromises(input_timeout_start_time, input_timeout_start_string);
       did_user_started
       .then((different_word) => {
+        console.log("different_word-> {"+different_word+"}");
         listener.removeEventListener("inputting", handler);
         is_listener_alive = false;
         gotSearchPhrase(different_word);
@@ -264,7 +302,7 @@ async function voiceSearch(){
         if (timeout) {
           listener.removeEventListener("inputting", handler);
           is_listener_alive = false;
-          console.log("Mais de 10 segundos");
+          console.log("Mais de 20 segundos");
           menu = "";
         }
         else {console.log("Input, mas ainda esta esperando");}
@@ -274,21 +312,48 @@ async function voiceSearch(){
 
 }
 
-async function gotSearchPhrase(query){
-  say("Entendido, pesquisando por: "+ query);
-  query.toLowerCase();
-  if (query[0] == ' ') {query = query.substr(1);;}
-  let url = 'https://arquivo.pt/textsearch?q="'+query+'"&maxItems=5&prettyPrint=true';
-  let result = await fetch(url);
-  let pages = await result.json();
+let on_option_selection = false;
 
-  if (pages.response_items.length != 0) {
-    let chosen_address = pages.response_items[round(random(0, pages.response_items.length))].linkToNoFrame;
-    paginas_atras.push(chosen_address);
-    document.getElementById("frame").src = chosen_address;
+function removeLineBreaks(word){
+  return word.replace(/(\r\n|\n|\r)/gm," ");
+}
+
+async function gotSearchPhrase(query){
+  query = removeLineBreaks(query);
+  query.trim();
+  if (on_option_selection == false) {
+    say("Entendido, pesquisando por: "+ query);
+    query.toLowerCase();
+    if (query[0] == ' ') {query = query.substr(1);;}
+    let url = 'https://arquivo.pt/textsearch?q="'+query+'"&maxItems=20&prettyPrint=true';
+    let result = await fetch(url);
+    pages = await result.json();
+
+    if (pages.response_items.length != 0) {
+      document.getElementById("links").innerHTML = "";
+      for (var i = 0; i < pages.response_items.length; i++) {
+        var node = document.createElement("LI");
+        var textnode = document.createTextNode(pages.response_items[i].title+" - "+(i+1));
+        node.appendChild(textnode);
+        document.getElementById("links").appendChild(node);
+      }
+      document.getElementById("links").style.display = "block";
+      on_option_selection = true;
+      voiceSearch("Escolha uma opção de 1 a "+pages.response_items.length);
+    }
+    else {say("Não encontrei nenhum resultado para: "+ query);}
   }
-  else {say("Não encontrei nenhum resultado para: "+ query);}
-  menu = "";
+  else {
+    on_option_selection = false;
+    document.getElementById("links").style.display = "none";
+    let option = parseInt(query, 10);
+    if (option != NaN) {
+      let chosen_address = pages.response_items[option].linkToNoFrame;
+      paginas_atras.push(chosen_address);
+      document.getElementById("frame").src = chosen_address;
+    }
+    else {say(query+" não é uma das opções enumeradas");}
+  }
 }
 
 function setup() {
@@ -297,11 +362,12 @@ function setup() {
 
 }
 
-function keyTyped() {
-  if (keyCode == ENTER) {
+window.onkeydown = function(e) { 
+  if (e.keyCode == 32) {
     startButton(event);
   }
-}
+  return !(e.keyCode == 32);
+};
 
 function encodePixelString(value){
   return value+"px";
@@ -309,32 +375,6 @@ function encodePixelString(value){
 
 function decodePixelString(value){
   return parseInt(value.substring(0, value.length - 2));
-}
-
-function abaixa(){
-  window.scrollBy(0, AMOUNT);
-  setTimeout(() => menu = "", 500);
-}
-
-function sobe(){
-  window.scrollBy(0, -AMOUNT);
-  setTimeout(() => menu = "", 500);
-}
-
-function volta() {
-  let anterior = paginas_atras[paginas_atras.length-1];
-  document.getElementById("frame").src = anterior;
-  paginas_afrente.push(anterior);
-  paginas_atras.pop(anterior);
-  setTimeout(() => menu = "", 500);
-}
-
-function avanca() {
-  let proxima = paginas_afrente[paginas_afrente.length-1];
-  document.getElementById("frame").src = proxima;
-  paginas_atras.push(proxima);
-  paginas_afrente.pop(proxima);
-  setTimeout(() => menu = "", 500);
 }
 
 function mostraElementoPorAlgunsSegundos(id){

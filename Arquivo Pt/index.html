@@ -3,6 +3,7 @@
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+  <script src="levenshtein.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta charset="utf-8">
 </head>
@@ -10,11 +11,11 @@
 
 <body>
   <!-- Microphone setting up information feedback -->
-  <div id="info">
-    <p id="info_start">Pressione ENTER e comece a falar.</p>
-    <p id="info_speak_now">Fale agora.</p>
+  <div id="info" class = "scrollingDiv">
+    <p id="info_start">Pressione ESPACO e comece a falar. Lista de comandos em "AJUDA"</p>
+    <p id="info_speak_now">Pode falar!</p>
     <p id="info_no_microphone" style="display:none">Nenhum microfone foi encontrado. Certifique-se que o microfone esta instalado e que as <a href="//support.google.com/chrome/bin/answer.py?hl=en&amp;answer=1407892"> configurações</a> estejam configuradas corretamente.</p>
-    <p id="info_allow">Clique no botão ALLOW acima para habilitar seu microfone.</p>
+    <p id="info_allow">Clique no botão PERMITIR/ALLOW acima para habilitar seu microfone.</p>
     <p id="info_denied">Permissão negada para usar o microfone</p>
     <p id="info_blocked">Permissão para usar o microfone esta bloqueada. Para alterar isso, vá para chrome://settings/contentExceptions#media-stream</p>
     <p id="info_help">Estes são os comandos atualmente disponíveis:</p>
@@ -22,11 +23,13 @@
       Faça o upgrade para o <a href="//www.google.com/chrome">Chrome</a> versão 25 ou posterior.</p>
     </div>
 
-    <div id="results" style="display:none">
+    <div id="speech_text_div" style="display:none" class = "scrollingDiv">
      <span id="interim_span" class="interim"></span>
    </div>
 
-   <div id="help" style="display:none">
+   <ul id="links" style="display:none" class = "scrollingDiv"></ul>
+
+   <div id="help" style="display:none" class = "scrollingDiv">
      <ul>
        <li>Pesquisar</li>
        <li>Baixo</li>
