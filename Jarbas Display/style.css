@@ -1,7 +1,32 @@
-html, body {
-  margin: 0;
+html,
+body {
   padding: 0;
 }
+
 canvas {
-  display: block;
+  display: none;
+  position: static;
+  left: calc(50% - 600px);
+}
+
+.info {
+  padding: 20px;
+  background: #EAE0CC;
+  border-radius: 0 0 20px 0;
+  position: fixed;
+  overflow: hidden;
+  font-family: futura-pt, sans-serif;
+  font-size: 25px;
+  opacity: 0;
+}
+
+#temp {
+  padding: 20px;
+  background: #EAE0CC;
+  border-radius: 0 0 20px 0;
+  position: fixed;
+  overflow: hidden;
+  font-family: futura-pt, sans-serif;
+  font-size: 25px;
+  top: 10%;
 }
