@@ -150,7 +150,7 @@ function searchOption(word){
     last_word = word;
     let formatted = word.toLowerCase().trim();
 
-    if (["pesquisa", "pesquisar"].indexOf(formatted)>=0){
+    if (["pesquisar"].indexOf(formatted)>=0){
       console.log("pesquisa");
       voiceSearch("Vamos fazer uma pesquisa");
     }
@@ -348,6 +348,7 @@ async function gotSearchPhrase(query){
     document.getElementById("links").style.display = "none";
     let option = parseInt(query, 10);
     if (option != NaN) {
+      say("Entendido, acessando "+option);
       let chosen_address = pages.response_items[option].linkToNoFrame;
       paginas_atras.push(chosen_address);
       document.getElementById("frame").src = chosen_address;
