@@ -1,16 +1,34 @@
-<!DOCTYPE html><html><head>
-	<script src="p5.min.js"></script>
-	<script src="p5.dom.min.js"></script>
-	<script src="p5.sound.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<link type="text" href="values.txt">
+<!-- Implemented the user interface and infos panels with transitions made with GreenSock -->
 
-	<meta charset="utf-8">
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://use.typekit.net/vdu3fti.css">
+  <link type="text" href="values.txt">
+
+  <meta charset="utf-8" />
 
 </head>
 
 <body>
-	<script src="sketch.js"></script>
 
+    <div class= "info" id="1">Howdy there! Click on the right to advance or on the left to go back</div>
+    <div class= "info">To be straight forward, this is a visualizer for the Jarbas API data</div>
+    <div class= "info">Jarbas is part of <a href="https://serenata.ai/">Serenata de Amor operation</a> in Brazil</div>
+    <div class= "info">The operation aims to combat corruption from the analisys of data using machine learning, pretty cool stuff, check them out</div>
+    <div class= "info">In the graph shown the bars represent the amount of reinbursments registered on each price range</div>
+    <div class= "info">The code fetches the API and displays the values in real time</div>
+  <div class= "info">Click on the right and watch the graph grow</div>
+  
+<!--   <div id= "temp"></div> -->
 
-</body></html>
+  <script src="sketch.js"></script>
+</body>
+
+</html>
