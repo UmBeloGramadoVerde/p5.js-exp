@@ -23,6 +23,14 @@ let connection_id;
 let recieved = {terrain: false, orb: false};
 let exploded_ball;
 
+function gotName(){
+  let name = document.getElementsByName("ball_name")[0].value;
+  socket.emit('ball_name', name);
+  document.getElementById("info").style.visibility = "hidden";
+  document.getElementsByTagName("CANVAS")[0].style.visibility = "visible";
+  allower=1;
+}
+
 function preload() {
 
   socket = io.connect('http://localhost:3000');
@@ -112,7 +120,7 @@ function test() {
           fill(255);
           textAlign(CENTER);
           textSize(20);
-          text(subset(balls[i].id, 0, 4), balls[i].x, balls[i].y + balls[i].r);
+          text(subset(balls[i].name, 0, 9), balls[i].x, balls[i].y + balls[i].r);
         }
 
         //touches returns true if the two balls touched
@@ -199,12 +207,6 @@ function setup() {
 
   socket.on('kill',
     function(data) {
-      // for (var i = balls.length - 1; i >= 0; i--) {
-      //   if (data.id == balls[i].id) {
-      //     let ball_aux = new Ball(99, balls[i].x, balls[i].y, balls[i].r);
-      //     ball_aux.explode();
-      //   }
-      // }
       if (data.id == socket.id) {
         ball.alive = false;
         console.log("I died");
@@ -217,6 +219,6 @@ function setup() {
     );
 }
 
-function mousePressed() {
-  allower=1;
-}
+// function mousePressed() {
+//   allower=1;
+// }

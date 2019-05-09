@@ -10,8 +10,9 @@ let terrain;
 let running=false;
 let contador2 = 0;
 
-function Ball(id, x, y, r) {
+function Ball(id, x, y, r, name) {
   this.id = id;
+  this.name="placeholder";
   this.x = x;
   this.y = y;
   this.r = r;
@@ -150,7 +151,6 @@ io.sockets.on('connection',
 
     socket.on('update',
       function(data) {
-        //console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
         let ball=0;
         for (let i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
@@ -164,7 +164,6 @@ io.sockets.on('connection',
 
     socket.on('orb_killed',
       function(data) {
-        //console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
         let ball;
         let pos_orb = {x: orb.x, y: orb.y};
         for (let i = 0; i < balls.length; i++) {
@@ -219,6 +218,14 @@ io.sockets.on('connection',
         if (socket.id == balls[i].id) {
           console.log("Client "+socket.id+" has disconnected");
           balls.pop(balls[i]);
+        }
+      }
+    });
+
+    socket.on('ball_name', function(data) {
+      for (let i = 0; i < balls.length; i++) {
+        if (socket.id == balls[i].id) {
+          balls[i].name = data;
         }
       }
     });

@@ -2,7 +2,65 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
 canvas {
   display: block;
+  position: fixed;
   margin: auto;
+  top: 0px;
+  visibility: hidden;
+}
+
+#info {
+  display: grid;
+  font-family: verdana;
+  background-color: #6B5CA5;
+  color: rgb(92, 10, 20);
+  margin: 50px;
+  padding: 50px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "text ."
+    ". form";
+  border-radius: 5px;
+}
+
+#form {
+  grid-area: form;
+  margin-top: auto;
+}
+
+#text {
+  grid-area: text;
+  text-align: right;
+  margin-top: auto;
+}
+
+.input-text {
+  display: block;
+  color: inherit;
+  width: 100%;
+  font-family: inherit;
+  font-size: 2.1rem;
+  line-height: var(--inputLineHeight);
+  border: none;
+  border-radius: 0.4rem;
+  box-shadow: 0.2rem 0.8rem 1.6rem #5e35b1;
+}
+
+.input-text::placeholder {
+  color: #B0BEC5;
+}
+
+#play_button {
+  color: inherit;
+  border-radius: 4px;
+  text-shadow: 0.2rem 0.8rem 1.6rem #5e35b1;
+  background: #C8B8DB;
+  font-size: 2rem;
+}
+
+#play_button:hover {
+  background-color: #4095c6;
 }
