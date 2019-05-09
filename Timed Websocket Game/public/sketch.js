@@ -8,6 +8,8 @@ let MAX = 400;
 let MIN = 30;
 let last_frame_mil = 0;
 let contador = 0;
+let contador2 = 0;
+let contador3 = 0;
 let COLOR_1;
 let COLOR_2;
 let COLOR_3;
@@ -16,15 +18,15 @@ let socket;
 let balls = [];
 let data;
 let allower=0;
-let hunter_ball;
+let hunter_ball=0;
+let connection_id;
 let recieved = {terrain: false, orb: false};
+let exploded_ball;
 
 function preload() {
 
   socket = io.connect('http://localhost:3000');
   terrain = new Terrain(MIN, MAX);
-
-
 
 }
 
@@ -36,28 +38,46 @@ function test() {
     translate(-ball.pos.x, -ball.pos.y);
     background(92, 39, 81);
     terrain.draw(current_color, color(100, 87, 166));
-    ball.move();
-    ball.draw();
-    ball.keepInside(terrain);
     let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
-    stroke(92, 39, 81);
-    line(mouse.x, mouse.y, ball.pos.x, ball.pos.y);
-
-    if (contador % 25 == 0) {
-      if (current_color == COLOR_3) {
-        current_color = COLOR_1;
-      } else if (current_color == COLOR_1) {
-        current_color = COLOR_2;
-      } else if (current_color == COLOR_2) {
-        current_color = COLOR_3;
-        ball.boost(p5.Vector.sub(mouse, ball.pos));
+    
+    if (!ball.alive) {
+      console.log("entrei");
+      if (contador3 == 0) {
+        ball.explode();
+        contador3 = Math.floor(Date.now()/1000);
       }
+      else if ((Math.floor(Date.now()/1000)) - contador3 > 7) {
+        contador3 = 0;
+      }
+      else {
+        ball.draw();
+      }
+    }
+    else {
+
+      ball.move();
+      ball.draw();
+      ball.keepInside(terrain);
+      stroke(92, 39, 81);
+      line(mouse.x, mouse.y, ball.pos.x, ball.pos.y);
+
+    }
+
+    if (state_change) {
+      if (color_option == 1) {
+        current_color = COLOR_1;
+      } else if (color_option == 2) {
+        current_color = COLOR_2;
+      } else if (color_option == 3) {
+        current_color = COLOR_3;
+      }
+      ball.boost(p5.Vector.sub(mouse, ball.pos));
     }
     contador++;
 
     orb.draw();
     ball.checkOrb(orb);
-    if ((!orb.alive) && (ball.dist2(ball.pos, orb.pos) <= 1700)) {
+    if ((orb.alive) && (ball.dist2(ball.pos, orb.pos) <= 1700)) {
       if (hunter_ball != ball) {
         data = {
           x: orb.pos.x,
@@ -71,15 +91,42 @@ function test() {
       var id = balls[i].id;
       if (id !== socket.id) {
         let ball_aux = new Ball(99, balls[i].x, balls[i].y, balls[i].r);
-        ball_aux.draw();
-        //console.log(balls);
 
-        ball.checkBall(ball_aux);
+        if (!balls[i].alive) {
+          if (contador2 == 0) {
+            exploded_ball = ball_aux;
+            exploded_ball.explode();
+            exploded_ball.alive = false;
+            contador2 = Math.floor(Date.now()/1000);
+          }
+          else if ((Math.floor(Date.now()/1000)) - contador2 > 7) {
+            exploded_ball = 0;
+            contador2 = 0;
+          }
+          else {
+            exploded_ball.draw();
+          }
+        }
+        else {
+          ball_aux.draw();
+          fill(255);
+          textAlign(CENTER);
+          textSize(20);
+          text(subset(balls[i].id, 0, 4), balls[i].x, balls[i].y + balls[i].r);
+        }
 
-        fill(255);
-        textAlign(CENTER);
-        textSize(20);
-        text(subset(balls[i].id, 0, 4), balls[i].x, balls[i].y + balls[i].r);
+        //touches returns true if the two balls touched
+        if (hunter_ball.id == socket.id) {
+          if(ball.touches(ball_aux)&&(balls[i].alive==true)){
+            kill = {
+              x: ball_aux.pos.x,
+              y: ball_aux.pos.y,
+              id: id
+            };
+            socket.emit('ball_killed', kill);
+          }
+        }
+
       }
     }
 
@@ -116,13 +163,10 @@ function setup() {
       orb.pos.x = beat.orb.x;
       orb.pos.y = beat.orb.y;
       orb.alive = beat.orb.alive;
-      //1/60 = 0.1666666 seconds --> 16.67 miliseconds ~= 17
+      state_change = beat.state_change;
+      color_option = beat.color;
       if ((recieved.terrain == true)&&(recieved.terrain == true)) {
-        let diff = (millis() - last_frame_mil);
-        if (diff >= 17) {
-          test();
-          last_frame_mil = last_frame_mil + diff;
-        }
+        test();
       }
     }
     );
@@ -145,22 +189,33 @@ function setup() {
 
   socket.on('orb_taken',
     function(data) {
-      console.log("oi");
       if (orb.alive == true) {
         orb.alive = false;
         orb.explode();
         hunter_ball = data.dangerous_boi;
-        console.log(data);
+      }
+    }
+    );
+
+  socket.on('kill',
+    function(data) {
+      // for (var i = balls.length - 1; i >= 0; i--) {
+      //   if (data.id == balls[i].id) {
+      //     let ball_aux = new Ball(99, balls[i].x, balls[i].y, balls[i].r);
+      //     ball_aux.explode();
+      //   }
+      // }
+      if (data.id == socket.id) {
+        ball.alive = false;
+        console.log("I died");
+        setTimeout(()=>{
+          socket.emit("disconnect");
+          socket.disconnect();
+        }, 7000);
       }
     }
     );
 }
-
-
-// function mousePressed() {
-//   let mouse = createVector(mouseX - (width / 2), mouseY - (height / 2));
-//   ball.boost(mouse);
-// }
 
 function mousePressed() {
   allower=1;

@@ -8,6 +8,7 @@ class Ball {
     this.alive = true;
     this.particles = [];
     this.id = id;
+    this.hunter_ball = false;
   }
 
   draw() {
@@ -124,12 +125,15 @@ class Ball {
     }
   }
 
-  checkBall(ball) {
-    let delta = this.dist2(ball.pos, this.pos);
+  touches(ball_aux) {
+    let delta = this.dist2(ball_aux.pos, this.pos);
     if (delta <= 1700) {
-      if (ball.alive == true) {
-        ball.explode();
+      if (ball_aux.alive == true) {
+        return true;
       }
+    }
+    else {
+      return false;
     }
   }
 
@@ -175,7 +179,5 @@ class Ball {
       p = new Particle(this.pos.x, this.pos.y);
       this.particles.push(p);
     }
-    this.alive = false;
   }
-
 }

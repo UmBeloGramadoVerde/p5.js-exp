@@ -15,6 +15,7 @@ function Ball(id, x, y, r) {
   this.x = x;
   this.y = y;
   this.r = r;
+  this.alive = true;
 }
 
 function Terrain(r_min, r_max) {
@@ -85,28 +86,41 @@ var io = require('socket.io')(server);
 
 // setInterval(heartbeat, 20);
 
+let last_frame_mil=0;
+let color_counter=0;
+
 function heartbeat() {
+  //tells the balls if they should change the state of the playing field
+  let state=false;
+
+  //process.hrtime returns array with tim in seconds and high resolution time in nanoseconds, we take second index and transform to mili
+  let diff = (process.hrtime()[0] - last_frame_mil);
+  if (diff >= 2) {
+    color_counter = (color_counter) % 3 + 1;
+    state = true;
+    last_frame_mil = last_frame_mil + diff;
+  }
+
   beat = {
+    state_change: state,
+    color: color_counter,
     balls: balls,
     orb: orb
   };
   io.sockets.emit('heartbeat', beat);
-
 
   if (!orb.alive) {
     if (contador2 == 0) {
       contador2 = Math.floor(Date.now()/1000);
     }
     if ((Math.floor(Date.now()/1000)) - contador2 > 7) {
-      orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 2 * 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 2 * 360)), 20);
+      orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 360)), 20);
       contador2 = 0;
     }
   }
 
 
 }
-
-
 
 // Register a callback function to run when we have an individual connection
 // This is run for each individual user that connects
@@ -124,7 +138,7 @@ io.sockets.on('connection',
         if (balls.length == 0) {
           terrain = new Terrain(MIN, MAX);
           terrain.setup();
-          orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 2 * 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 2 * 360)), 20);
+          orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 360)), 20);
         }
         ball_aux = new Ball(socket.id, data.x, data.y, data.r);
         balls.push(ball_aux);
@@ -154,13 +168,8 @@ io.sockets.on('connection',
         let ball;
         let pos_orb = {x: orb.x, y: orb.y};
         for (let i = 0; i < balls.length; i++) {
-          // console.log("i="+i+" ");
-          // console.log("socket.id="+socket.id+" ");
-          // console.log("balls[i].id="+balls[i].id+" ");
           if (socket.id == balls[i].id) {
             ball = balls[i];
-            // console.log("****** FOUND IT ******");
-            // console.log("balls[i]="+balls[i]+" ");
           }
         }
         let delta = (ball.x - pos_orb.x)*(ball.x - pos_orb.x) + (ball.y - pos_orb.y)*(ball.y - pos_orb.y);
@@ -170,8 +179,36 @@ io.sockets.on('connection',
               dangerous_boi: ball,
               orb: orb
             };
-            socket.broadcast.emit('orb_taken', taken);
+            io.sockets.emit('orb_taken', taken);
             orb.alive = false;
+          }
+        }    
+      }
+      );
+
+    socket.on('ball_killed',
+      function(data) {
+        let ball;
+        let ball_aux = {x: data.x, y: data.y};
+        let ball_killed;
+        for (let i = 0; i < balls.length; i++) {
+          if (socket.id == balls[i].id) {
+            ball = balls[i];
+          }
+        }
+        let delta = (ball.x - ball_aux.x)*(ball.x - ball_aux.x) + (ball.y - ball_aux.y)*(ball.y - ball_aux.y);
+        if (delta <= 1700) {
+          for (let j = 0; j < balls.length; j++) {
+            if (data.id == balls[j].id) {
+              ball_killed = balls[j];
+            }
+          }
+          if (ball_killed.alive == true) {
+            kill = {
+              id: ball_killed.id
+            };
+            io.local.emit('kill', kill);
+            ball_killed.alive = false;
           }
         }    
       }

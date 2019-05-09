@@ -33,6 +33,5 @@ class Orb {
       p = new Particle(this.pos.x, this.pos.y);
       this.particles.push(p);
     }
-    this.alive = false;
   }
 }
