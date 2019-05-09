@@ -21,3 +21,9 @@ The orb is in sync among players, they can see the same one and interact with it
 Orb-take-age (I kinda like that expression, actually) is all done and all balls are properly notified when another player takes an orb. The hunter ball is passed to everybody and the next step is implementing the hunter ball killing the other player. signal sending will follow the same logic as for the taking of the orb, just with some extra steps.
 
 On another hand, I need to start working on the initial interface for the player to put in his ball name and player queue limited (maybe 10-15 players ? I need to stress test it, probably will make the balls smaller and the terrain bigger, though).
+
+---***---
+
+The players are now able to kill each other after getting the orb. Still need to make more tests to make the process more reliable. A killed player already is disconnected from the room automacally and can be placed in anyother iteration loop.
+
+Currently working on the initial user interface so the player can put the name of the ball to play with and the death screen.
