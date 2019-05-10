@@ -27,3 +27,7 @@ On another hand, I need to start working on the initial interface for the player
 The players are now able to kill each other after getting the orb. Still need to make more tests to make the process more reliable. A killed player already is disconnected from the room automacally and can be placed in anyother iteration loop.
 
 Currently working on the initial user interface so the player can put the name of the ball to play with and the death screen.
+
+---***---
+
+The first working build is done. Tested everything woth Ronnie really quick and there are still A LOT of things to fix like boost timing, jitter handling, respawning upon death, resolution and canvas size. BUT it does work ! Uhuuul. I'm really proud of myself, to be honest. I always thought about how these online games worked and now I feel I got really close to understanding it :))))
