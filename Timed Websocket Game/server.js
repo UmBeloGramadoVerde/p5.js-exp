@@ -1,14 +1,14 @@
-let express = require('express');
-let random = require('random');
-let angles = require('angle-functions');
-let app = express();
-let balls = [];
-let orb;
-let MAX = 400;
-let MIN = 30;
-let terrain;
-let running=false;
-let contador2 = 0;
+var express = require('express');
+const randomFloat = require('random-float');
+var angles = require('angle-functions');
+var app = express();
+var balls = [];
+var orb;
+var MAX = 400;
+var MIN = 30;
+var terrain;
+var running=false;
+var contador2 = 0;
 
 function Ball(id, x, y, r, name) {
   this.id = id;
@@ -32,15 +32,15 @@ function Terrain(r_min, r_max) {
 }
 
 Terrain.prototype.setup = function() {
-  let i;
-  let xaux, yaux;
-  let radius;
+  var i;
+  var xaux, yaux;
+  var radius;
 
   //***Generating terrain path***
 
   //inner
   for (i = 0; i < this.points_inner; i++) {
-    radius = random.float(min = this.radius_min, max = this.radius_min + this.midpoint);
+    radius = randomFloat(min = this.radius_min, max = this.radius_min + this.midpoint);
     xaux = angles.cos((360 / this.points_inner) * i) * radius;
     yaux = angles.sin((360 / this.points_inner) * i) * radius;
     this.vertices_inner.push({ x: xaux, y: yaux });
@@ -50,7 +50,7 @@ Terrain.prototype.setup = function() {
 
   //outer
   for (i = 0; i < this.points_outer; i++) {
-    radius = random.float(min = this.radius_max - this.midpoint, max = this.radius_max);
+    radius = randomFloat(min = this.radius_max - this.midpoint, max = this.radius_max);
     xaux = angles.cos((360 / this.points_outer) * i) * radius;
     yaux = angles.sin((360 / this.points_outer) * i) * radius;
     this.vertices_outer[i] = { x: xaux, y: yaux };
@@ -87,15 +87,15 @@ var io = require('socket.io')(server);
 
 // setInterval(heartbeat, 20);
 
-let last_frame_mil=0;
-let color_counter=0;
+var last_frame_mil=0;
+var color_counter=0;
 
 function heartbeat() {
   //tells the balls if they should change the state of the playing field
-  let state=false;
+  var state=false;
 
   //process.hrtime returns array with tim in seconds and high resolution time in nanoseconds, we take second index and transform to mili
-  let diff = (process.hrtime()[0] - last_frame_mil);
+  var diff = (process.hrtime()[0] - last_frame_mil);
   if (diff >= 2) {
     color_counter = (color_counter) % 3 + 1;
     state = true;
@@ -115,7 +115,7 @@ function heartbeat() {
       contador2 = Math.floor(Date.now()/1000);
     }
     if ((Math.floor(Date.now()/1000)) - contador2 > 7) {
-      orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 360)), 20);
+      orb = new Orb(((MAX + MIN) / 2) * angles.cos(randomFloat(0, 360)), ((MAX + MIN) / 2) * angles.sin(randomFloat(0, 360)), 20);
       contador2 = 0;
     }
   }
@@ -134,12 +134,12 @@ io.sockets.on('connection',
 
     socket.on('start',
       function(data) {
-      	let ball_aux;
+      	var ball_aux;
         console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
         if (balls.length == 0) {
           terrain = new Terrain(MIN, MAX);
           terrain.setup();
-          orb = new Orb(((MAX + MIN) / 2) * angles.cos(random.float(0, 360)), ((MAX + MIN) / 2) * angles.sin(random.float(0, 360)), 20);
+          orb = new Orb(((MAX + MIN) / 2) * angles.cos(randomFloat(0, 360)), ((MAX + MIN) / 2) * angles.sin(randomFloat(0, 360)), 20);
         }
         ball_aux = new Ball(socket.id, data.x, data.y, data.r);
         balls.push(ball_aux);
@@ -151,8 +151,8 @@ io.sockets.on('connection',
 
     socket.on('update',
       function(data) {
-        let ball=0;
-        for (let i = 0; i < balls.length; i++) {
+        var ball=0;
+        for (var i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
             ball = balls[i];
           }
@@ -164,14 +164,14 @@ io.sockets.on('connection',
 
     socket.on('orb_killed',
       function(data) {
-        let ball;
-        let pos_orb = {x: orb.x, y: orb.y};
-        for (let i = 0; i < balls.length; i++) {
+        var ball;
+        var pos_orb = {x: orb.x, y: orb.y};
+        for (var i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
             ball = balls[i];
           }
         }
-        let delta = (ball.x - pos_orb.x)*(ball.x - pos_orb.x) + (ball.y - pos_orb.y)*(ball.y - pos_orb.y);
+        var delta = (ball.x - pos_orb.x)*(ball.x - pos_orb.x) + (ball.y - pos_orb.y)*(ball.y - pos_orb.y);
         if (delta <= 1700) {
           if (orb.alive == true) {
             taken = {
@@ -187,17 +187,17 @@ io.sockets.on('connection',
 
     socket.on('ball_killed',
       function(data) {
-        let ball;
-        let ball_aux = {x: data.x, y: data.y};
-        let ball_killed;
-        for (let i = 0; i < balls.length; i++) {
+        var ball;
+        var ball_aux = {x: data.x, y: data.y};
+        var ball_killed;
+        for (var i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
             ball = balls[i];
           }
         }
-        let delta = (ball.x - ball_aux.x)*(ball.x - ball_aux.x) + (ball.y - ball_aux.y)*(ball.y - ball_aux.y);
+        var delta = (ball.x - ball_aux.x)*(ball.x - ball_aux.x) + (ball.y - ball_aux.y)*(ball.y - ball_aux.y);
         if (delta <= 1700) {
-          for (let j = 0; j < balls.length; j++) {
+          for (var j = 0; j < balls.length; j++) {
             if (data.id == balls[j].id) {
               ball_killed = balls[j];
             }
@@ -214,7 +214,7 @@ io.sockets.on('connection',
       );
 
     socket.on('disconnect', function() {
-      for (let i = 0; i < balls.length; i++) {
+      for (var i = 0; i < balls.length; i++) {
         if (socket.id == balls[i].id) {
           console.log("Client "+socket.id+" has disconnected");
           balls.pop(balls[i]);
@@ -223,7 +223,7 @@ io.sockets.on('connection',
     });
 
     socket.on('ball_name', function(data) {
-      for (let i = 0; i < balls.length; i++) {
+      for (var i = 0; i < balls.length; i++) {
         if (socket.id == balls[i].id) {
           balls[i].name = data;
         }

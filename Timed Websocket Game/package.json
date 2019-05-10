@@ -27,6 +27,8 @@
     "angle-functions": "^0.3.0",
     "express": "^4.16.4",
     "random": "^2.1.1",
+    "random-float": "^2.0.0",
+    "random-js": "^2.0.0",
     "socket.io": "^2.2.0"
   }
 }
