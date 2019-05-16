@@ -33,7 +33,7 @@ function gotName(){
 
 function preload() {
 
-  socket = io.connect('http://localhost:3000');
+  socket = io();
   terrain = new Terrain(MIN, MAX);
 
 }
@@ -42,11 +42,11 @@ function test() {
 
   if (allower==1){
     push();
-    translate(width / 2, height / 2);
+    translate(windowWidth / 2, (windowHeight/2) / 2);
     translate(-ball.pos.x, -ball.pos.y);
     background(92, 39, 81);
     terrain.draw(current_color, color(100, 87, 166));
-    let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
+    let mouse = createVector(mouseX - (windowWidth / 2) + ball.pos.x, mouseY - ((windowHeight/2) / 2) + ball.pos.y);
     
     if (!ball.alive) {
       console.log("entrei");
@@ -149,7 +149,7 @@ function test() {
 }
 function setup() {
 
-  createCanvas(width, height);
+  createCanvas(windowWidth, (windowHeight/2));
   ball = new Ball(1, MAX / 2, MAX / 2, 20);
   orb = new Orb(MAX*10, MAX*10, 20);
   COLOR_1 = color(157, 172, 255);
