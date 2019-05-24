@@ -31,3 +31,9 @@ Currently working on the initial user interface so the player can put the name o
 ---***---
 
 The first working build is done. Tested everything woth Ronnie really quick and there are still A LOT of things to fix like boost timing, jitter handling, respawning upon death, resolution and canvas size. BUT it does work ! Uhuuul. I'm really proud of myself, to be honest. I always thought about how these online games worked and now I feel I got really close to understanding it :))))
+
+---***---
+
+Background animation is done and achieved by using only one SVG file animated with CSS. Quite convenient and lightweight in terms of performance. The initial screen works like a charm. Still need to make the death screen and implement the respawning logic.
+
+All the structure for the music is in place. Only need to produce it on the PO-33 and put in the proper folder.
