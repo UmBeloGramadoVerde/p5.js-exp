@@ -4,7 +4,9 @@ html, body {
 }
 
 body {
-  background-color: rgba(92, 39, 81, 0.5);
+  background-image: url(assets/background-tile.svg);
+  background-size: 20vw;
+  background-color: #5C2751;
 }
 
 canvas {
@@ -24,8 +26,8 @@ canvas {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    "text ."
-    ". form";
+  "text ."
+  ". form";
   border-radius: 5px;
 }
 
@@ -66,4 +68,16 @@ canvas {
 
 #play_button:hover {
   background-color: #4095c6;
+}
+
+#mute_button {
+  bottom: 5vw;
+  right: 5vw;
+  position: fixed;
+  visibility: hidden;
+  color: inherit;
+  border-radius: 4px;
+  text-shadow: 0.2rem 0.8rem 1.6rem #5e35b1;
+  background: #C8B8DB;
+  font-size: 2rem;
 }

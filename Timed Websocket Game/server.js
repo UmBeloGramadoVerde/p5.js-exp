@@ -96,7 +96,7 @@ function heartbeat() {
 
   //process.hrtime returns array with tim in seconds and high resolution time in nanoseconds, we take second index and transform to mili
   var diff = (process.hrtime()[0] - last_frame_mil);
-  if (diff >= 2) {
+  if (diff >= 1) {
     color_counter = (color_counter) % 3 + 1;
     state = true;
     last_frame_mil = last_frame_mil + diff;

@@ -28,6 +28,7 @@ function gotName(){
   socket.emit('ball_name', name);
   document.getElementById("info").style.visibility = "hidden";
   document.getElementsByTagName("CANVAS")[0].style.visibility = "visible";
+  document.getElementById("mute_button").style.visibility = "visible";
   allower=1;
 }
 
@@ -147,6 +148,7 @@ function test() {
     pop();
   }
 }
+
 function setup() {
 
   createCanvas(windowWidth, (windowHeight/2));
@@ -217,6 +219,11 @@ function setup() {
       }
     }
     );
+}
+
+function mute(){
+  var music = document.getElementById("music");
+  music.play();
 }
 
 // function mousePressed() {

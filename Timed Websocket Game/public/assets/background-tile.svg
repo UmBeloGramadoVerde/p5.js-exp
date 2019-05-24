@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	viewBox="0 0 397 396.6" style="enable-background:new 0 0 397 396.6;" xml:space="preserve">
+	<style type="text/css">
+		.st0{fill:#6458A6;}
+		.st1{fill:#5C2751;}
+		.st0, .st1 {
+		animation: x 6s cubic-bezier(.47,-0.01,.59,.99) infinite alternate;
+		}
+
+		@keyframes x {
+		0% {transform: translate(0px, 0px)}
+		25% {transform: translate(397px, 0px)}
+		50% {transform: translate(397px, -397px)}
+		75% {transform: translate(0px, -397px)}
+		100% {transform: translate(0px, 0px)}
+		}
+	</style>
+	<rect x="-0.1" y="0" class="st0" width="397" height="198.4"/>
+	<rect y="198.4" class="st1" width="397" height="198.4"/>
+	<path class="st0" d="M397,198.4c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2S49.6,198.4,0,198.4"/>
+	<path class="st1" d="M397,0c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2S49.5,0-0.1,0"/>
+	<rect x="-397.1" y="0" class="st0" width="397" height="198.4"/>
+	<rect x="-397" y="198.4" class="st1" width="397" height="198.4"/>
+	<path class="st0" d="M0,198.4c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2s-49.5-99.2-99.1-99.2"/>
+	<path class="st1" d="M0,0c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2S-347.5,0-397.1,0"/>
+	<rect x="-0.2" y="396.6" class="st0" width="397" height="198.4"/>
+	<rect x="-0.1" y="595" class="st1" width="397" height="198.4"/>
+	<path class="st0" d="M397,595c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2C74.3,644.6,49.5,595-0.1,595"
+		/>
+		<path class="st1" d="M397,396.6c-49.6,0-74.5,49.6-99.3,99.2S248.1,595,198.4,595s-74.5-49.6-99.3-99.2s-49.6-99.2-99.2-99.2"/>
+		<rect x="-397.2" y="396.6" class="st0" width="397" height="198.4"/>
+		<rect x="-397" y="595" class="st1" width="397" height="198.4"/>
+		<path class="st0" d="M-0.1,595c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2
+			c-24.8-49.6-49.5-99.2-99.1-99.2"/>
+			<path class="st1" d="M-0.1,396.6c-49.6,0-74.5,49.6-99.3,99.2s-49.6,99.2-99.3,99.2s-74.5-49.6-99.3-99.2
+				c-24.8-49.6-49.6-99.2-99.2-99.2"/>
+			</svg>
