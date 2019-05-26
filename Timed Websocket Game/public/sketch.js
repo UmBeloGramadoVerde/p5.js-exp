@@ -2,6 +2,7 @@
 //FIX PUSH DISTANCE
 //FIX TIME FOR RESIDUAL ORB EXPLODING
 
+//this is default value, but is updated based based on screen size
 let width = 600;
 let height = 600;
 let MAX = 400;
@@ -29,6 +30,7 @@ function gotName(){
   document.getElementById("info").style.visibility = "hidden";
   document.getElementsByTagName("CANVAS")[0].style.visibility = "visible";
   document.getElementById("mute_button").style.visibility = "visible";
+  document.getElementById("music").play();
   allower=1;
 }
 
@@ -43,11 +45,11 @@ function test() {
 
   if (allower==1){
     push();
-    translate(windowWidth / 2, (windowHeight/2) / 2);
+    translate(width / 2, height / 2);
     translate(-ball.pos.x, -ball.pos.y);
     background(92, 39, 81);
     terrain.draw(current_color, color(100, 87, 166));
-    let mouse = createVector(mouseX - (windowWidth / 2) + ball.pos.x, mouseY - ((windowHeight/2) / 2) + ball.pos.y);
+    let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
     
     if (!ball.alive) {
       console.log("entrei");
@@ -150,8 +152,21 @@ function test() {
 }
 
 function setup() {
+  if (windowWidth < windowHeight){
+    height = windowWidth;
+    width = windowWidth;
+  }
+  else if (windowWidth >= windowHeight){
+    height = windowHeight;
+    width = windowHeight;
+    document.getElementById("defaultCanvas0").style.top = "0vh";
+    var margin = (windowWidth - width) / 2;
+    margin = margin * 100 / windowWidth;
+    document.getElementById("defaultCanvas0").style.left = floor(margin)+"vw";
+    document.getElementById("mute_button").style.zIndex = "10";
+  }
 
-  createCanvas(windowWidth, (windowHeight/2));
+  createCanvas(width, height);
   ball = new Ball(1, MAX / 2, MAX / 2, 20);
   orb = new Orb(MAX*10, MAX*10, 20);
   COLOR_1 = color(157, 172, 255);
@@ -223,7 +238,7 @@ function setup() {
 
 function mute(){
   var music = document.getElementById("music");
-  music.play();
+  music.muted = !music.muted;
 }
 
 // function mousePressed() {
