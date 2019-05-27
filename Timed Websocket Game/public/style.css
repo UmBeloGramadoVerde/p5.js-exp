@@ -28,6 +28,29 @@ canvas {
   font-size: 2rem;
 }
 
+#respawn_button {
+  bottom: 5vw;
+  left: 5vw;
+  position: fixed;
+  visibility: hidden;
+  color: inherit;
+  border-radius: 4px;
+  text-shadow: 0.2rem 0.8rem 1.6rem #5e35b1;
+  background: #C8B8DB;
+  font-size: 2rem;
+  transition: 0.33s;
+  /*animation: respawn 5s ease-in-out 0s 1;*/
+}
+
+@keyframes respawn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 #info {
   display: grid;
   font-family: verdana;
@@ -96,4 +119,24 @@ canvas {
 
 #instructions h4:first-child {
   margin-top: 0px;
+}
+
+#kill_feed {
+  position: fixed;
+  font-family: verdana;
+  z-index: 15;
+  font-size: 3vw;
+  font-weight: 800;
+  top: 25vh;
+  visibility: hidden;
+  left: 50%;
+  width: min-content;
+  transform: translateX(-50%);
+  color: rgb(75, 192, 217);
+  text-align: center;
+  text-shadow:
+  -1px -1px 0 #5C2751,  
+  1px -1px 0 #5C2751,
+  -1px 1px 0 #5C2751,
+  1px 1px 0 #5C2751;
 }

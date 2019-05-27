@@ -2,6 +2,8 @@
 //FIX PUSH DISTANCE
 //FIX TIME FOR RESIDUAL ORB EXPLODING
 
+//IMPLEMENT ORB TAKING SOUND
+
 //this is default value, but is updated based based on screen size
 let width = 600;
 let height = 600;
@@ -14,6 +16,8 @@ let contador3 = 0;
 let COLOR_1;
 let COLOR_2;
 let COLOR_3;
+let FRIEND_COLOR;
+let HUNTER_COLOR;
 let current_color;
 let socket;
 let balls = [];
@@ -23,6 +27,9 @@ let hunter_ball=0;
 let connection_id;
 let recieved = {terrain: false, orb: false};
 let exploded_ball;
+let respawning_flag = false;
+let respawning = 0;
+let TIME_FOR_RESPAWN = 5;
 
 function gotName(){
   let name = document.getElementsByName("ball_name")[0].value;
@@ -30,7 +37,8 @@ function gotName(){
   document.getElementById("info").style.visibility = "hidden";
   document.getElementsByTagName("CANVAS")[0].style.visibility = "visible";
   document.getElementById("mute_button").style.visibility = "visible";
-  document.getElementById("music").play();
+  document.getElementById("respawn_button").style.visibility = "visible";
+  // document.getElementById("music").play();
   allower=1;
 }
 
@@ -52,7 +60,6 @@ function test() {
     let mouse = createVector(mouseX - (width / 2) + ball.pos.x, mouseY - (height / 2) + ball.pos.y);
     
     if (!ball.alive) {
-      console.log("entrei");
       if (contador3 == 0) {
         ball.explode();
         contador3 = Math.floor(Date.now()/1000);
@@ -61,18 +68,25 @@ function test() {
         contador3 = 0;
       }
       else {
-        ball.draw();
+        ball.draw(FRIEND_COLOR);
       }
     }
     else {
 
       ball.move();
-      ball.draw();
+      if (socket.id == hunter_ball.id) {
+        ball.draw(HUNTER_COLOR);
+      }
+      else {
+        ball.draw(FRIEND_COLOR);
+      }
       ball.keepInside(terrain);
       stroke(92, 39, 81);
       line(mouse.x, mouse.y, ball.pos.x, ball.pos.y);
-
     }
+
+    if (hunter_ball.id == socket.id) {music_speed(1.5);}
+    else {music_speed(1);}
 
     if (state_change) {
       if (color_option == 1) {
@@ -115,11 +129,16 @@ function test() {
             contador2 = 0;
           }
           else {
-            exploded_ball.draw();
+            exploded_ball.draw(FRIEND_COLOR);
           }
         }
         else {
-          ball_aux.draw();
+          if (balls[i].id == hunter_ball.id) {
+            ball_aux.draw(HUNTER_COLOR);
+          }
+          else {
+            ball_aux.draw(FRIEND_COLOR);
+          }
           fill(255);
           textAlign(CENTER);
           textSize(20);
@@ -137,7 +156,25 @@ function test() {
             socket.emit('ball_killed', kill);
           }
         }
+      }
+    }
 
+    //respawning_flag lets me run this only once. The flag is lowred after the setTimeout runs.
+    if (respawning_flag == true) {
+
+      if (respawning == 0) {
+        respawning = Math.floor(Date.now()/1000);
+      }
+      else if ((Math.floor(Date.now()/1000)) - respawning > TIME_FOR_RESPAWN) {
+        ball.alive = true;
+        ball = new Ball(socket.id, ((MAX + MIN) / 2) * cos(random(0, 360)), ((MAX + MIN) / 2) * sin(random(0, 360)), 20);
+        socket.emit('respawn', socket.id);
+        respawning_flag = false;
+        respawning = 0;
+        document.getElementById("respawn_button").innerHTML = "RESPAWN";
+      }
+      else {
+        document.getElementById("respawn_button").innerHTML = TIME_FOR_RESPAWN + 1 - (Math.floor(Date.now()/1000) - respawning);
       }
     }
 
@@ -164,14 +201,17 @@ function setup() {
     margin = margin * 100 / windowWidth;
     document.getElementById("defaultCanvas0").style.left = floor(margin)+"vw";
     document.getElementById("mute_button").style.zIndex = "10";
+    document.getElementById("respawn_button").style.zIndex = "11";
   }
 
   createCanvas(width, height);
-  ball = new Ball(1, MAX / 2, MAX / 2, 20);
+  ball = new Ball(socket.id, ((MAX + MIN) / 2) * cos(random(0, 360)), ((MAX + MIN) / 2) * sin(random(0, 360)), 20);
   orb = new Orb(MAX*10, MAX*10, 20);
   COLOR_1 = color(157, 172, 255);
   COLOR_2 = color(210, 190, 235);
   COLOR_3 = color(255, 210, 215);
+  FRIEND_COLOR = color(75, 192, 217);
+  HUNTER_COLOR = color(216, 17, 89);
   current_color = COLOR_1;
 
 
@@ -224,13 +264,16 @@ function setup() {
 
   socket.on('kill',
     function(data) {
+
+      killFeed(hunter_ball.name, data.name);
+
       if (data.id == socket.id) {
         ball.alive = false;
-        console.log("I died");
-        setTimeout(()=>{
-          socket.emit("disconnect");
-          socket.disconnect();
-        }, 7000);
+        // setTimeout(()=>{
+        //   socket.emit("disconnect");
+        //   socket.disconnect();
+        // }, 7000);
+        respawn();
       }
     }
     );
@@ -239,6 +282,25 @@ function setup() {
 function mute(){
   var music = document.getElementById("music");
   music.muted = !music.muted;
+}
+
+function music_speed(speed){
+  var music = document.getElementById("music");
+  music.playbackRate = speed;
+}
+
+function killFeed(killer, killed) {
+  var feed = document.getElementById("kill_feed");
+  feed.innerHTML = killer + " killed " + killed;
+  feed.style.visibility = "visible";
+  setTimeout(()=>{
+    feed.style.visibility = "hidden"
+  }, 3000);
+}
+
+function respawn() {
+  respawning_flag = !respawning_flag;
+  if (respawning_flag == false) {document.getElementById("respawn_button").innerHTML = "RESPAWN";}
 }
 
 // function mousePressed() {

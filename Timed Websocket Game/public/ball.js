@@ -11,10 +11,10 @@ class Ball {
     this.hunter_ball = false;
   }
 
-  draw() {
+  draw(color) {
     let i;
     if (this.alive == true) {
-      fill(75, 192, 217);
+      fill(color);
       stroke(92, 39, 81);
       strokeWeight(1);
       ellipse(this.pos.x, this.pos.y, 2 * this.r, 2 * this.r);

@@ -10,7 +10,7 @@ class Orb {
   draw() {
     let i;
     if (this.alive == true) {
-      fill(120, 100, 217);
+      fill(255, 202, 41);
       stroke(92, 39, 81);
       strokeWeight(1);
       ellipse(this.pos.x, this.pos.y, 2 * this.r, 2 * this.r);

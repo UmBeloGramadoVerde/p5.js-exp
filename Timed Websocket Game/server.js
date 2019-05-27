@@ -135,7 +135,6 @@ io.sockets.on('connection',
     socket.on('start',
       function(data) {
       	var ball_aux;
-        console.log(socket.id + " " + data.x + " " + data.y + " " + data.r);
         if (balls.length == 0) {
           terrain = new Terrain(MIN, MAX);
           terrain.setup();
@@ -164,22 +163,24 @@ io.sockets.on('connection',
 
     socket.on('orb_killed',
       function(data) {
-        var ball;
+        var ball=0;
         var pos_orb = {x: orb.x, y: orb.y};
         for (var i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
             ball = balls[i];
           }
         }
-        var delta = (ball.x - pos_orb.x)*(ball.x - pos_orb.x) + (ball.y - pos_orb.y)*(ball.y - pos_orb.y);
-        if (delta <= 1700) {
-          if (orb.alive == true) {
-            taken = {
-              dangerous_boi: ball,
-              orb: orb
-            };
-            io.sockets.emit('orb_taken', taken);
-            orb.alive = false;
+        if (ball != 0) {
+          var delta = (ball.x - pos_orb.x)*(ball.x - pos_orb.x) + (ball.y - pos_orb.y)*(ball.y - pos_orb.y);
+          if (delta <= 1700) {
+            if (orb.alive == true) {
+              taken = {
+                dangerous_boi: ball,
+                orb: orb
+              };
+              io.sockets.emit('orb_taken', taken);
+              orb.alive = false;
+            }
           }
         }    
       }
@@ -187,29 +188,57 @@ io.sockets.on('connection',
 
     socket.on('ball_killed',
       function(data) {
-        var ball;
+        var ball=0;
         var ball_aux = {x: data.x, y: data.y};
         var ball_killed;
+        var index;
         for (var i = 0; i < balls.length; i++) {
           if (socket.id == balls[i].id) {
             ball = balls[i];
           }
         }
-        var delta = (ball.x - ball_aux.x)*(ball.x - ball_aux.x) + (ball.y - ball_aux.y)*(ball.y - ball_aux.y);
-        if (delta <= 1700) {
-          for (var j = 0; j < balls.length; j++) {
-            if (data.id == balls[j].id) {
-              ball_killed = balls[j];
+        //at the orb_killed function the above assumption that ball socket.id would be equal to some id in balls was giving errors
+        //with that in mind I fixed it here as well, we just set the initial value to 0 and check if it's still the same
+        if (ball!=0) {
+          var delta = (ball.x - ball_aux.x)*(ball.x - ball_aux.x) + (ball.y - ball_aux.y)*(ball.y - ball_aux.y);
+          if (delta <= 1700) {
+            for (var j = 0; j < balls.length; j++) {
+              if (data.id == balls[j].id) {
+                ball_killed = balls[j];
+                index = j;
+              }
             }
+            if (ball_killed.alive == true) {
+              kill = {
+                id: ball_killed.id,
+                name: ball_killed.name
+              };
+              io.local.emit('kill', kill);
+              balls[index].alive = false;
+            }
+          } 
+        }   
+      }
+      );
+
+    socket.on('respawn',
+      function(id) {
+        console.log("####ANTES#####");
+        for (var i = 0; i < balls.length; i++) {
+          console.log("i: "+i+" balls[i].alive: "+balls[i].alive+" balls[i].id: "+balls[i].id);
+        }   
+        console.log("#########");
+        console.log("");
+        console.log("####DEPOIS#####");
+        for (var i = 0; i < balls.length; i++) {
+          if (id == balls[i].id) {
+            console.log("id: "+id+" balls[i].id: "+balls[i].id);
+            balls[i].alive = true;
           }
-          if (ball_killed.alive == true) {
-            kill = {
-              id: ball_killed.id
-            };
-            io.local.emit('kill', kill);
-            ball_killed.alive = false;
-          }
-        }    
+          console.log("i: "+i+" balls[i].alive: "+balls[i].alive+" balls[i].id: "+balls[i].id);
+        }   
+        console.log("#########");
+        console.log("");   
       }
       );
 

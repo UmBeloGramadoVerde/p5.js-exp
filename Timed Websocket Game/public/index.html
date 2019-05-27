@@ -11,7 +11,7 @@
 
 <body>
 
-  <audio id="music" autoplay loop preload="auto">
+  <audio id="music" loop preload="auto">
     <source src="./assets/music.mp3" type="audio/mpeg">
       Seu browser não suporta a tag audio.
     </audio>
@@ -30,12 +30,18 @@
       </div>
 
       <div id="instructions">
-        <h4>Grab the orb to become the hunter ball.</h4>
-        <h4>Touch other playes to kill them as the hunter.</h4>
+        <h4>Grab the orb (golden ball) to become the hunter ball (red ball).</h4>
+        <h4>Touch other playes (blue balls) to kill them as the hunter.</h4>
+        <h4>The hunter only changes when someone else grabs the orbs.</h4>
         <h4>Pretty simple, wouldn't you say ?</h4>
       </div>
+
+
     </div>
     <button onclick="mute();" id="mute_button">MUTE</button>
+    <button onclick="respawn();" id="respawn_button">RESPAWN</button>
+    <div id="kill_feed"></div>
+    <div id="respaw_screen"></div>
 
     <script src="particle.js"></script>
     <script src="orb.js"></script>
