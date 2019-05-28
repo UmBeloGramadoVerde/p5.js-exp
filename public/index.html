@@ -1,0 +1,54 @@
+<!DOCTYPE html><html><head>
+  <script src="libraries/p5.min.js"></script>
+  <script src="libraries/p5.dom.min.js"></script>
+  <script src="libraries/p5.sound.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+
+
+</head>
+
+<body>
+
+  <audio id="music" loop preload="auto">
+    <source src="./assets/music.mp3" type="audio/mpeg">
+      Seu browser não suporta a tag audio.
+    </audio>
+
+    <div id="info">
+      <div id="text">
+        <h1>The horse with no name</h1>
+        <h3>Choose a name for your ball and click PLAY</h3>
+      </div>
+
+      <div id="form">
+
+        <input type="text" name="ball_name" placeholder="Name" maxlength="10" class="input-text">
+        <p></p>
+        <button onclick="gotName();" id="play_button">PLAY</button>
+      </div>
+
+      <div id="instructions">
+        <h4>Grab the orb (golden ball) to become the hunter ball (red ball).</h4>
+        <h4>Touch other playes (blue balls) to kill them as the hunter.</h4>
+        <h4>The hunter only changes when someone else grabs the orbs.</h4>
+        <h4>Pretty simple, wouldn't you say ?</h4>
+      </div>
+
+
+    </div>
+    <button onclick="mute();" id="mute_button">MUTE</button>
+    <button onclick="respawn();" id="respawn_button">RESPAWN</button>
+    <div id="kill_feed"></div>
+    <div id="respaw_screen"></div>
+
+    <script src="particle.js"></script>
+    <script src="orb.js"></script>
+    <script src="terrain.js"></script>
+    <script src="ball.js"></script>
+    <script src="sketch.js"></script>
+
+
+
+  </body></html>
