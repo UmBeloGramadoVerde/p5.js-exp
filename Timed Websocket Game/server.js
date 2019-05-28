@@ -12,7 +12,7 @@ var contador2 = 0;
 
 function Ball(id, x, y, r, name) {
   this.id = id;
-  this.name="placeholder";
+  this.name=" ";
   this.x = x;
   this.y = y;
   this.r = r;

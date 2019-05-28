@@ -32,13 +32,23 @@ let respawning = 0;
 let TIME_FOR_RESPAWN = 5;
 
 function gotName(){
+  
+  ball = new Ball(socket.id, ((MAX + MIN) / 2) * cos(random(0, 360)), ((MAX + MIN) / 2) * sin(random(0, 360)), 20);
+  data = {
+    x: ball.pos.x,
+    y: ball.pos.y,
+    r: ball.r
+  };
+  socket.emit('start', data);
+
   let name = document.getElementsByName("ball_name")[0].value;
   socket.emit('ball_name', name);
   document.getElementById("info").style.visibility = "hidden";
   document.getElementsByTagName("CANVAS")[0].style.visibility = "visible";
   document.getElementById("mute_button").style.visibility = "visible";
   document.getElementById("respawn_button").style.visibility = "visible";
-  // document.getElementById("music").play();
+  document.getElementById("music").play();
+
   allower=1;
 }
 
@@ -205,7 +215,6 @@ function setup() {
   }
 
   createCanvas(width, height);
-  ball = new Ball(socket.id, ((MAX + MIN) / 2) * cos(random(0, 360)), ((MAX + MIN) / 2) * sin(random(0, 360)), 20);
   orb = new Orb(MAX*10, MAX*10, 20);
   COLOR_1 = color(157, 172, 255);
   COLOR_2 = color(210, 190, 235);
@@ -213,14 +222,6 @@ function setup() {
   FRIEND_COLOR = color(75, 192, 217);
   HUNTER_COLOR = color(216, 17, 89);
   current_color = COLOR_1;
-
-
-  data = {
-    x: ball.pos.x,
-    y: ball.pos.y,
-    r: ball.r
-  };
-  socket.emit('start', data);
 
   socket.on('heartbeat',
     function(beat) {

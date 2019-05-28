@@ -7,6 +7,7 @@ body {
   background-image: url(assets/background-tile.svg);
   background-size: 20vw;
   background-color: #5C2751;
+  overflow: hidden;
 }
 
 canvas {
